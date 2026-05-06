@@ -17,12 +17,21 @@ nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding:1rem 0;
 }
 
 .nav-links {
   display: flex;
   gap: 2rem;
   list-style: none;
+  text-decoration: none;
+  color:#111;
+  font-weight: 500;
+  transition: 0.2 ease;
+}
+
+.nav-links a:hover{
+    color:#555;
 }
 
 /* 3️⃣ Hero section layout */
