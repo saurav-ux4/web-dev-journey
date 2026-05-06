@@ -13,13 +13,17 @@ body{
 }
 
 .nav-bar{
-
+height: 150px;
+max-width: 100%;
+background-color: cornflowerblue;
 
 }
 
 .image-box{
     height: 100%;
+    padding:10px;
     display: grid;
+    gap:10px;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr;
 }
@@ -31,6 +35,7 @@ body{
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
+    border-radius: 15px;
 }
 
 .second{
@@ -40,6 +45,7 @@ body{
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
+    border-radius: 15px;
 }
 
 
@@ -50,12 +56,10 @@ body{
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
+    border-radius: 15px;
 }
 
-div{
-    background-color: gray;
 
-}
 
 .butt-1{
     margin-left: auto;
@@ -69,8 +73,7 @@ div{
 }
 
  .image-div{
-    width: 500px;
-    height:400px;
+   aspect-ratio: 16/9;
     background-color: rgb(237, 194, 24);
     background-image:url(images/pexels-jan-van-der-wolf-11680885-19884401.jpg);
     background-position: center;
@@ -87,8 +90,7 @@ div{
     height: 100vh;
 }
 .image-block{
-    width: 570px;
-    height:400px;
+    aspect-ratio: 1/1;
     background-image:url(images/pexels-erkocphoto-32146234.jpg);
     background-position: center;
     background-repeat: no-repeat;
@@ -109,6 +111,7 @@ div{
 
 .first-row{
    display: grid;
+   gap:10px;
    grid-template-columns: 1fr 2fr;
 }
 
@@ -127,6 +130,7 @@ div{
 .second-row{
    display: grid;
    grid-template-columns: 1fr 2fr;
+    gap:10px;
 
 }
 
@@ -141,6 +145,27 @@ div{
 }
 
 .s-two{
+     grid-column: 2/3;
+}
+
+
+.third-row{
+   display: grid;
+   grid-template-columns: 1fr 2fr;
+   gap:10px;
+}
+
+.t-one{
+
+    grid-column: 1/2;
+    background-image:url(images/pexels-oandremoura-36938397.jpg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+}
+
+.t-two{
      grid-column: 2/3;
 }
 
