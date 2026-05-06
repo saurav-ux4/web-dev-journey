@@ -1,0 +1,62 @@
+/* components.css */
+
+/* 1️⃣ Button styles */
+button {
+  background-color: #111;
+  color: #fff;
+  padding: 0.9rem 1.8rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+button:hover {
+  background-color: #333;
+}
+
+/* 2️⃣ Tag / Badge */
+.tag {
+  display: inline-block;
+  background-color: #111;
+  color: #fff;
+  padding: 0.3rem 0.8rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* 3️⃣ Headings refinement */
+.hero h2 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.hero p {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+/* 4️⃣ Featured section text */
+.featured h3 {
+  font-size: 1.6rem;
+  margin: 1rem 0;
+}
+
+.featured p {
+  max-width: 400px;
+}
+
+/* 5️⃣ Stats typography */
+.stat h3 {
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+.stat p {
+  font-size: 1rem;
+  margin-top: 0.5rem;
+}
