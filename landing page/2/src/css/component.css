@@ -31,13 +31,16 @@ button:hover {
 
 /* 3️⃣ Headings refinement */
 .hero h2 {
-  font-size: 3rem;
+  font-size: 3.2rem;
   margin-bottom: 1rem;
+  font-weight: 700;
+  line-height: 1.2;
 }
 
 .hero p {
   font-size: 1.2rem;
   margin-bottom: 2rem;
+  color:#444;
 }
 
 /* 4️⃣ Featured section text */
