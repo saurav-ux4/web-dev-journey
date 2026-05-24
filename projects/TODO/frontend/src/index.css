@@ -1,0 +1,353 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Sora', sans-serif;
+  background-image: url("./assets/bg.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+/* ─── APP SHELL ─────────────────────────────────── */
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  gap: 14px;
+}
+
+/* ─── LIGHT-BLUE GLASSMORPHISM CONTAINER ─────────── */
+.todo-glass-container {
+  width: 320px;
+  max-height: 70vh;
+  background: rgba(180, 222, 242, 0.22);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border-radius: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  padding: 16px 14px;
+  overflow-y: auto;
+  scrollbar-width: none;
+  box-shadow:
+    0 8px 40px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+
+.todo-glass-container::-webkit-scrollbar {
+  display: none;
+}
+
+/* ─── EMPTY STATE ────────────────────────────────── */
+.empty-state {
+  color: rgba(0, 0, 0, 0.3);
+  font-size: 13px;
+  text-align: center;
+  padding: 20px 0;
+  letter-spacing: 0.03em;
+}
+
+/* ─── ERROR MSG ──────────────────────────────────── */
+.error-msg {
+  color: rgba(200, 60, 60, 0.8);
+  font-size: 12px;
+  padding: 4px 12px 8px;
+}
+
+/* ─── TODO ITEM (dark pill) ──────────────────────── */
+.todo-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(10, 10, 10, 0.88);
+  border-radius: 50px;
+  padding: 11px 12px 11px 12px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.todo-item:last-child {
+  margin-bottom: 0;
+}
+
+.todo-item:hover {
+  opacity: 0.9;
+}
+
+/* ── Custom square checkbox ─────────────────────── */
+.todo-checkbox {
+  width: 17px;
+  height: 17px;
+  border: 1.5px solid rgba(180, 230, 240, 0.6);
+  border-radius: 4px;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  position: relative;
+  background: transparent;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.todo-checkbox:checked {
+  background: rgba(160, 220, 238, 0.9);
+  border-color: rgba(160, 220, 238, 0.9);
+}
+
+.todo-checkbox:checked::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 4.5px;
+  width: 5px;
+  height: 8px;
+  border: 1.5px solid rgba(0, 0, 0, 0.7);
+  border-top: none;
+  border-left: none;
+  transform: rotate(45deg);
+}
+
+/* ── Task text ───────────────────────────────────── */
+.todo-text {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 13px;
+  font-weight: 300;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: 0.01em;
+  transition: opacity 0.2s, text-decoration 0.2s;
+}
+
+.todo-text.completed {
+  text-decoration: line-through;
+  text-decoration-color: rgba(255, 255, 255, 0.4);
+  opacity: 0.45;
+}
+
+/* ── Delete: plain rounded square, no icon ───────── */
+.delete-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.07);
+  border: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s;
+  /* no icon, no text — just a block */
+}
+
+.todo-item:hover .delete-btn {
+  background: rgba(255, 70, 70, 0.2);
+}
+
+.delete-btn:hover {
+  background: rgba(255, 70, 70, 0.4) !important;
+}
+
+/* ─── INPUT FORM ─────────────────────────────────── */
+.form-wrapper {
+  width: 320px;
+}
+
+/* The outer pill container holds both textarea and button */
+.input-pill {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  background: rgba(8, 8, 8, 0.82);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 50px;
+  padding: 12px 10px 12px 22px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+  transition: border-radius 0.2s ease;
+}
+
+/* When textarea wraps to multiple lines, soften the pill */
+.input-pill.multiline {
+  border-radius: 22px;
+}
+
+/* Auto-resizing textarea (starts as 1 row) */
+.todo-input-area {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 14px;
+  font-family: 'Sora', sans-serif;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+  resize: none;
+  overflow: hidden;
+  /* single row height = line-height */
+  line-height: 22px;
+  min-height: 22px;
+  max-height: 120px;
+  padding: 0;
+}
+
+.todo-input-area::placeholder {
+  color: rgba(255, 255, 255, 0.25);
+}
+
+/* White circular + button */
+.add-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.94);
+  border: none;
+  color: #000;
+  font-size: 22px;
+  font-weight: 300;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  line-height: 1;
+  transition: transform 0.15s, background 0.15s;
+}
+
+.add-btn:hover  { transform: scale(1.06); background: #fff; }
+.add-btn:active { transform: scale(0.95); }
+
+/* ─── DETAIL OVERLAY ─────────────────────────────── */
+.detail-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background-image: url("./assets/bg.jpg");
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px;
+  animation: detailIn 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes detailIn {
+  from { opacity: 0; transform: scale(0.97); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* Glass card centered in the overlay */
+.detail-card {
+  width: 100%;
+  max-width: 400px;
+  background: rgba(180, 222, 242, 0.22);
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  padding: 32px 28px;
+  box-shadow: 0 12px 48px rgba(0,0,0,0.3);
+}
+
+.detail-back-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 18px;
+  padding: 0;
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Sora', sans-serif;
+  font-size: 13px;
+  font-weight: 300;
+  letter-spacing: 0.04em;
+  transition: color 0.15s;
+}
+
+.detail-back-btn:hover { color: rgba(255,255,255,0.9); }
+
+.detail-content {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+/* Large square checkbox */
+.detail-checkbox {
+  width: 24px;
+  height: 24px;
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  border-radius: 9px;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  position: relative;
+  background: transparent;
+  transition: background 0.2s, border-color 0.2s;
+  margin-top: 2px;
+}
+
+.detail-checkbox:checked {
+  background: rgba(160, 220, 238, 0.85);
+  border-color: rgba(160, 220, 238, 0.85);
+}
+
+.detail-checkbox:checked::after {
+  content: '';
+  position: absolute;
+  top: 6px;
+  left: 10px;
+  width: 9px;
+  height: 15px;
+  border: 2px solid rgba(0, 0, 0, 0.6);
+  border-top: none;
+  border-left: none;
+  transform: rotate(45deg);
+}
+
+.detail-text {
+  font-size: 15px;
+  color: rgba(0, 0, 0, 0.85);
+  line-height: 1.7;
+  font-family: 'Sora', sans-serif;
+  font-weight: 300;
+  letter-spacing: 0.01em;
+  flex: 1;
+  transition: opacity 0.2s, text-decoration 0.2s;
+}
+
+.detail-text.completed {
+  text-decoration: line-through;
+  text-decoration-color: rgba(255, 255, 255, 0.4);
+  opacity: 0.5;
+}
+
+/* ─── LOADING ─────────────────────────────────────── */
+.loading-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 14px;
+  font-family: 'Sora', sans-serif;
+  letter-spacing: 0.08em;
+}
