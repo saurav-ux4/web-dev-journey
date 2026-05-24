@@ -1,0 +1,1424 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+backend/.env
+backend/config/db.js
+backend/controllers/todoController.js
+backend/models/todo.js
+backend/package.json
+backend/routes/todoRoutes.js
+backend/server.js
+frontend/.gitignore
+frontend/index.html
+frontend/package.json
+frontend/public/favicon.svg
+frontend/public/icons.svg
+frontend/src/app.jsx
+frontend/src/assets/bg.jpg
+frontend/src/assets/hero.png
+frontend/src/assets/javascript.svg
+frontend/src/assets/vite.svg
+frontend/src/component/TodoForm.jsx
+frontend/src/component/TodoItem.jsx
+frontend/src/component/TodoList.jsx
+frontend/src/index.css
+frontend/src/main.jsx
+frontend/src/services/api.js
+README.md
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="backend/config/db.js">
+const mongoose = require("mongoose");
+
+const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI);
+
+    console.log("MongoDB Connected");
+  } catch (error) {
+    console.log("Database Error:", error);
+
+    process.exit(1);
+  }
+};
+
+module.exports = connectDB;
+</file>
+
+<file path="backend/controllers/todoController.js">
+const Todo = require("../models/Todo");
+
+
+
+// GET all todos
+const getTodos = async (req, res) => {
+  try {
+    const todos = await Todo.find();
+
+    res.json(todos);
+  } catch (error) {
+    res.status(500).json({
+      message: error.message
+    });
+  }
+};
+
+
+
+// CREATE todo
+const createTodo = async (req, res) => {
+  try {
+    const newTodo = await Todo.create({
+      text: req.body.text
+    });
+
+    res.status(201).json(newTodo);
+  } catch (error) {
+    res.status(500).json({
+      message: error.message
+    });
+  }
+};
+
+
+
+// UPDATE todo
+const updateTodo = async (req, res) => {
+  try {
+    const updatedTodo = await Todo.findByIdAndUpdate(
+      req.params.id,
+
+      {
+        completed: req.body.completed
+      },
+
+      {
+        new: true
+      }
+    );
+
+    res.json(updatedTodo);
+  } catch (error) {
+    res.status(500).json({
+      message: error.message
+    });
+  }
+};
+
+
+
+// DELETE todo
+const deleteTodo = async (req, res) => {
+  try {
+    await Todo.findByIdAndDelete(req.params.id);
+
+    res.json({
+      message: "Todo deleted"
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message
+    });
+  }
+};
+
+
+
+module.exports = {
+  getTodos,
+  createTodo,
+  updateTodo,
+  deleteTodo
+};
+</file>
+
+<file path="backend/models/todo.js">
+const mongoose = require("mongoose");
+
+const todoSchema = new mongoose.Schema({
+  text: {
+    type: String,
+    required: true
+  },
+
+  completed: {
+    type: Boolean,
+    default: false
+  }
+});
+
+module.exports = mongoose.model("Todo", todoSchema);
+</file>
+
+<file path="backend/package.json">
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "mongoose": "^9.6.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
+</file>
+
+<file path="backend/routes/todoRoutes.js">
+const express = require("express");
+
+const router = express.Router();
+
+const {
+  getTodos,
+  createTodo,
+  updateTodo,
+  deleteTodo
+} = require("../controllers/todoController");
+
+
+
+// GET all todos
+router.get("/", getTodos);
+
+
+
+// CREATE todo
+router.post("/", createTodo);
+
+
+
+// UPDATE todo
+router.put("/:id", updateTodo);
+
+
+
+// DELETE todo
+router.delete("/:id", deleteTodo);
+
+
+
+module.exports = router;
+</file>
+
+<file path="backend/server.js">
+const express = require("express");
+const cors = require("cors");
+const dotenv = require("dotenv");
+
+const connectDB = require("./config/db");
+dotenv.config();
+
+connectDB();
+
+const app = express();
+
+const PORT =process.env.PORT|| 5000;
+
+
+// Middleware
+app.use(express.json());
+app.use(cors());
+
+
+
+
+//routes
+const todoRoutes = require("./routes/todoRoutes");
+
+app.use("/todos", todoRoutes);
+
+
+// Home route
+app.get("/", (req, res) => {
+  res.send("API is running");
+});
+
+
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+</file>
+
+<file path="frontend/.gitignore">
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+</file>
+
+<file path="frontend/index.html">
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="src\index.css">
+    <title>frontend</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
+</file>
+
+<file path="frontend/package.json">
+{
+  "name": "frontend",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^8.0.12"
+  },
+  "dependencies": {
+    "axios": "^1.16.1",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6"
+  }
+}
+</file>
+
+<file path="frontend/public/favicon.svg">
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="46" fill="none" viewBox="0 0 48 46"><path fill="#863bff" d="M25.946 44.938c-.664.845-2.021.375-2.021-.698V33.937a2.26 2.26 0 0 0-2.262-2.262H10.287c-.92 0-1.456-1.04-.92-1.788l7.48-10.471c1.07-1.497 0-3.578-1.842-3.578H1.237c-.92 0-1.456-1.04-.92-1.788L10.013.474c.214-.297.556-.474.92-.474h28.894c.92 0 1.456 1.04.92 1.788l-7.48 10.471c-1.07 1.498 0 3.579 1.842 3.579h11.377c.943 0 1.473 1.088.89 1.83L25.947 44.94z" style="fill:#863bff;fill:color(display-p3 .5252 .23 1);fill-opacity:1"/><mask id="a" width="48" height="46" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type:alpha"><path fill="#000" d="M25.842 44.938c-.664.844-2.021.375-2.021-.698V33.937a2.26 2.26 0 0 0-2.262-2.262H10.183c-.92 0-1.456-1.04-.92-1.788l7.48-10.471c1.07-1.498 0-3.579-1.842-3.579H1.133c-.92 0-1.456-1.04-.92-1.787L9.91.473c.214-.297.556-.474.92-.474h28.894c.92 0 1.456 1.04.92 1.788l-7.48 10.471c-1.07 1.498 0 3.578 1.842 3.578h11.377c.943 0 1.473 1.088.89 1.832L25.843 44.94z" style="fill:#000;fill-opacity:1"/></mask><g mask="url(#a)"><g filter="url(#b)"><ellipse cx="5.508" cy="14.704" fill="#ede6ff" rx="5.508" ry="14.704" style="fill:#ede6ff;fill:color(display-p3 .9275 .9033 1);fill-opacity:1" transform="matrix(.00324 1 1 -.00324 -4.47 31.516)"/></g><g filter="url(#c)"><ellipse cx="10.399" cy="29.851" fill="#ede6ff" rx="10.399" ry="29.851" style="fill:#ede6ff;fill:color(display-p3 .9275 .9033 1);fill-opacity:1" transform="matrix(.00324 1 1 -.00324 -39.328 7.883)"/></g><g filter="url(#d)"><ellipse cx="5.508" cy="30.487" fill="#7e14ff" rx="5.508" ry="30.487" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(89.814 -25.913 -14.639)scale(1 -1)"/></g><g filter="url(#e)"><ellipse cx="5.508" cy="30.599" fill="#7e14ff" rx="5.508" ry="30.599" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(89.814 -32.644 -3.334)scale(1 -1)"/></g><g filter="url(#f)"><ellipse cx="5.508" cy="30.599" fill="#7e14ff" rx="5.508" ry="30.599" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="matrix(.00324 1 1 -.00324 -34.34 30.47)"/></g><g filter="url(#g)"><ellipse cx="14.072" cy="22.078" fill="#ede6ff" rx="14.072" ry="22.078" style="fill:#ede6ff;fill:color(display-p3 .9275 .9033 1);fill-opacity:1" transform="rotate(93.35 24.506 48.493)scale(-1 1)"/></g><g filter="url(#h)"><ellipse cx="3.47" cy="21.501" fill="#7e14ff" rx="3.47" ry="21.501" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(89.009 28.708 47.59)scale(-1 1)"/></g><g filter="url(#i)"><ellipse cx="3.47" cy="21.501" fill="#7e14ff" rx="3.47" ry="21.501" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(89.009 28.708 47.59)scale(-1 1)"/></g><g filter="url(#j)"><ellipse cx=".387" cy="8.972" fill="#7e14ff" rx="4.407" ry="29.108" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(39.51 .387 8.972)"/></g><g filter="url(#k)"><ellipse cx="47.523" cy="-6.092" fill="#7e14ff" rx="4.407" ry="29.108" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(37.892 47.523 -6.092)"/></g><g filter="url(#l)"><ellipse cx="41.412" cy="6.333" fill="#47bfff" rx="5.971" ry="9.665" style="fill:#47bfff;fill:color(display-p3 .2799 .748 1);fill-opacity:1" transform="rotate(37.892 41.412 6.333)"/></g><g filter="url(#m)"><ellipse cx="-1.879" cy="38.332" fill="#7e14ff" rx="4.407" ry="29.108" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(37.892 -1.88 38.332)"/></g><g filter="url(#n)"><ellipse cx="-1.879" cy="38.332" fill="#7e14ff" rx="4.407" ry="29.108" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(37.892 -1.88 38.332)"/></g><g filter="url(#o)"><ellipse cx="35.651" cy="29.907" fill="#7e14ff" rx="4.407" ry="29.108" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(37.892 35.651 29.907)"/></g><g filter="url(#p)"><ellipse cx="38.418" cy="32.4" fill="#47bfff" rx="5.971" ry="15.297" style="fill:#47bfff;fill:color(display-p3 .2799 .748 1);fill-opacity:1" transform="rotate(37.892 38.418 32.4)"/></g></g><defs><filter id="b" width="60.045" height="41.654" x="-19.77" y="16.149" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="7.659"/></filter><filter id="c" width="90.34" height="51.437" x="-54.613" y="-7.533" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="7.659"/></filter><filter id="d" width="79.355" height="29.4" x="-49.64" y="2.03" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="e" width="79.579" height="29.4" x="-45.045" y="20.029" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="f" width="79.579" height="29.4" x="-43.513" y="21.178" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="g" width="74.749" height="58.852" x="15.756" y="-17.901" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="7.659"/></filter><filter id="h" width="61.377" height="25.362" x="23.548" y="2.284" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="i" width="61.377" height="25.362" x="23.548" y="2.284" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="j" width="56.045" height="63.649" x="-27.636" y="-22.853" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="k" width="54.814" height="64.646" x="20.116" y="-38.415" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="l" width="33.541" height="35.313" x="24.641" y="-11.323" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="m" width="54.814" height="64.646" x="-29.286" y="6.009" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="n" width="54.814" height="64.646" x="-29.286" y="6.009" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="o" width="54.814" height="64.646" x="8.244" y="-2.416" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="p" width="39.409" height="43.623" x="18.713" y="10.588" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter></defs></svg>
+</file>
+
+<file path="frontend/public/icons.svg">
+<svg xmlns="http://www.w3.org/2000/svg">
+  <symbol id="bluesky-icon" viewBox="0 0 16 17">
+    <g clip-path="url(#bluesky-clip)"><path fill="#08060d" d="M7.75 7.735c-.693-1.348-2.58-3.86-4.334-5.097-1.68-1.187-2.32-.981-2.74-.79C.188 2.065.1 2.812.1 3.251s.241 3.602.398 4.13c.52 1.744 2.367 2.333 4.07 2.145-2.495.37-4.71 1.278-1.805 4.512 3.196 3.309 4.38-.71 4.987-2.746.608 2.036 1.307 5.91 4.93 2.746 2.72-2.746.747-4.143-1.747-4.512 1.702.189 3.55-.4 4.07-2.145.156-.528.397-3.691.397-4.13s-.088-1.186-.575-1.406c-.42-.19-1.06-.395-2.741.79-1.755 1.24-3.64 3.752-4.334 5.099"/></g>
+    <defs><clipPath id="bluesky-clip"><path fill="#fff" d="M.1.85h15.3v15.3H.1z"/></clipPath></defs>
+  </symbol>
+  <symbol id="discord-icon" viewBox="0 0 20 19">
+    <path fill="#08060d" d="M16.224 3.768a14.5 14.5 0 0 0-3.67-1.153c-.158.286-.343.67-.47.976a13.5 13.5 0 0 0-4.067 0c-.128-.306-.317-.69-.476-.976A14.4 14.4 0 0 0 3.868 3.77C1.546 7.28.916 10.703 1.231 14.077a14.7 14.7 0 0 0 4.5 2.306q.545-.748.965-1.587a9.5 9.5 0 0 1-1.518-.74q.191-.14.372-.293c2.927 1.369 6.107 1.369 8.999 0q.183.152.372.294-.723.437-1.52.74.418.838.963 1.588a14.6 14.6 0 0 0 4.504-2.308c.37-3.911-.63-7.302-2.644-10.309m-9.13 8.234c-.878 0-1.599-.82-1.599-1.82 0-.998.705-1.82 1.6-1.82.894 0 1.614.82 1.599 1.82.001 1-.705 1.82-1.6 1.82m5.91 0c-.878 0-1.599-.82-1.599-1.82 0-.998.705-1.82 1.6-1.82.893 0 1.614.82 1.599 1.82 0 1-.706 1.82-1.6 1.82"/>
+  </symbol>
+  <symbol id="documentation-icon" viewBox="0 0 21 20">
+    <path fill="none" stroke="#aa3bff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.35" d="m15.5 13.333 1.533 1.322c.645.555.967.833.967 1.178s-.322.623-.967 1.179L15.5 18.333m-3.333-5-1.534 1.322c-.644.555-.966.833-.966 1.178s.322.623.966 1.179l1.534 1.321"/>
+    <path fill="none" stroke="#aa3bff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.35" d="M17.167 10.836v-4.32c0-1.41 0-2.117-.224-2.68-.359-.906-1.118-1.621-2.08-1.96-.599-.21-1.349-.21-2.848-.21-2.623 0-3.935 0-4.983.369-1.684.591-3.013 1.842-3.641 3.428C3 6.449 3 7.684 3 10.154v2.122c0 2.558 0 3.838.706 4.726q.306.383.713.671c.76.536 1.79.64 3.581.66"/>
+    <path fill="none" stroke="#aa3bff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.35" d="M3 10a2.78 2.78 0 0 1 2.778-2.778c.555 0 1.209.097 1.748-.047.48-.129.854-.503.982-.982.145-.54.048-1.194.048-1.749a2.78 2.78 0 0 1 2.777-2.777"/>
+  </symbol>
+  <symbol id="github-icon" viewBox="0 0 19 19">
+    <path fill="#08060d" fill-rule="evenodd" d="M9.356 1.85C5.05 1.85 1.57 5.356 1.57 9.694a7.84 7.84 0 0 0 5.324 7.44c.387.079.528-.168.528-.376 0-.182-.013-.805-.013-1.454-2.165.467-2.616-.935-2.616-.935-.349-.91-.864-1.143-.864-1.143-.71-.48.051-.48.051-.48.787.051 1.2.805 1.2.805.695 1.194 1.817.857 2.268.649.064-.507.27-.857.49-1.052-1.728-.182-3.545-.857-3.545-3.87 0-.857.31-1.558.8-2.104-.078-.195-.349-1 .077-2.078 0 0 .657-.208 2.14.805a7.5 7.5 0 0 1 1.946-.26c.657 0 1.328.092 1.946.26 1.483-1.013 2.14-.805 2.14-.805.426 1.078.155 1.883.078 2.078.502.546.799 1.247.799 2.104 0 3.013-1.818 3.675-3.558 3.87.284.247.528.714.528 1.454 0 1.052-.012 1.896-.012 2.156 0 .208.142.455.528.377a7.84 7.84 0 0 0 5.324-7.441c.013-4.338-3.48-7.844-7.773-7.844" clip-rule="evenodd"/>
+  </symbol>
+  <symbol id="social-icon" viewBox="0 0 20 20">
+    <path fill="none" stroke="#aa3bff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.35" d="M12.5 6.667a4.167 4.167 0 1 0-8.334 0 4.167 4.167 0 0 0 8.334 0"/>
+    <path fill="none" stroke="#aa3bff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.35" d="M2.5 16.667a5.833 5.833 0 0 1 8.75-5.053m3.837.474.513 1.035c.07.144.257.282.414.309l.93.155c.596.1.736.536.307.965l-.723.73a.64.64 0 0 0-.152.531l.207.903c.164.715-.213.991-.84.618l-.872-.52a.63.63 0 0 0-.577 0l-.872.52c-.624.373-1.003.094-.84-.618l.207-.903a.64.64 0 0 0-.152-.532l-.723-.729c-.426-.43-.289-.864.306-.964l.93-.156a.64.64 0 0 0 .412-.31l.513-1.034c.28-.562.735-.562 1.012 0"/>
+  </symbol>
+  <symbol id="x-icon" viewBox="0 0 19 19">
+    <path fill="#08060d" fill-rule="evenodd" d="M1.893 1.98c.052.072 1.245 1.769 2.653 3.77l2.892 4.114c.183.261.333.48.333.486s-.068.089-.152.183l-.522.593-.765.867-3.597 4.087c-.375.426-.734.834-.798.905a1 1 0 0 0-.118.148c0 .01.236.017.664.017h.663l.729-.83c.4-.457.796-.906.879-.999a692 692 0 0 0 1.794-2.038c.034-.037.301-.34.594-.675l.551-.624.345-.392a7 7 0 0 1 .34-.374c.006 0 .93 1.306 2.052 2.903l2.084 2.965.045.063h2.275c1.87 0 2.273-.003 2.266-.021-.008-.02-1.098-1.572-3.894-5.547-2.013-2.862-2.28-3.246-2.273-3.266.008-.019.282-.332 2.085-2.38l2-2.274 1.567-1.782c.022-.028-.016-.03-.65-.03h-.674l-.3.342a871 871 0 0 1-1.782 2.025c-.067.075-.405.458-.75.852a100 100 0 0 1-.803.91c-.148.172-.299.344-.99 1.127-.304.343-.32.358-.345.327-.015-.019-.904-1.282-1.976-2.808L6.365 1.85H1.8zm1.782.91 8.078 11.294c.772 1.08 1.413 1.973 1.425 1.984.016.017.241.02 1.05.017l1.03-.004-2.694-3.766L7.796 5.75 5.722 2.852l-1.039-.004-1.039-.004z" clip-rule="evenodd"/>
+  </symbol>
+</svg>
+</file>
+
+<file path="frontend/src/app.jsx">
+import {useEffect,useState} from "react";
+import TodoForm from "./component/TodoForm";
+import TodoList from "./component/TodoList";
+import { getTodos,
+         createTodo,
+         deleteTodo,
+         updateTodo
+        } from "./services/api";
+
+
+function App() {
+
+   //==============STATES=================
+ const [todos, setTodos] = useState([]);
+
+ const [loading, setLoading] =
+    useState(true);
+
+ const [error, setError] =
+    useState("");     
+
+//========== FETCH TODOS ==========
+
+  const fetchTodos = async () => {
+    try {
+      setLoading(true);
+
+      const response = await getTodos();
+
+      setTodos(response.data);
+
+      setError("");
+    } catch (error) {
+      console.log(error);
+
+      setError("Failed to fetch todos");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+// ========= RUN ON PAGE LOAD =========
+
+  useEffect(() => {
+    fetchTodos();
+  }, []);
+
+
+//================ADD TODO================
+   const handleAddTodo = async (text) => {
+  try {
+    const response = await createTodo({
+      text
+    });
+
+    setTodos((prevTodos) => [
+      ...prevTodos,
+      response.data
+    ]);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+
+//==================DELETE TODO===========
+const handleDeleteTodo = async (id) => {
+  try {
+    await deleteTodo(id);
+
+    setTodos((prevTodos) =>
+      prevTodos.filter(
+        (todo) => todo._id !== id
+      )
+    );
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+
+//=================toggle======================
+const handleToggleTodo = async (todo) => {
+  try{
+
+    const updatedTodo = {
+      ...todo,
+      completed: !todo.completed
+    };
+
+    const savedTodo = await updateTodo(
+      todo._id,
+      updatedTodo
+    );
+
+    setTodos(
+      todos.map((t) =>
+        t._id === todo._id
+          ? savedTodo
+          : t
+      )
+    );
+
+  }catch(error){
+    console.log(error);
+  }
+};
+
+//==============LOADING UI=============
+  if (loading) {
+    return <h1>Loading...</h1>;
+    
+  }
+
+
+//==============MAIN UI================
+  return (
+
+ <div className="app">
+     <div className="todo-container">
+    <h1>todo app</h1>
+      
+       {error && <p>{error}</p>}
+
+      <TodoForm onAdd={handleAddTodo}/>
+
+      <TodoList  todos={todos}
+                 onDelete={handleDeleteTodo}
+                 onToggle={handleToggleTodo}
+                />
+
+     </div>
+ </div>
+  );
+}
+
+export default App;
+</file>
+
+<file path="frontend/src/assets/javascript.svg">
+<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" width="32" height="32" viewBox="0 0 256 256"><path fill="#F7DF1E" d="M0 0h256v256H0V0Z"/><path d="m67.312 213.932l19.59-11.856c3.78 6.701 7.218 12.371 15.465 12.371c7.905 0 12.89-3.092 12.89-15.12v-81.798h24.057v82.138c0 24.917-14.606 36.259-35.916 36.259c-19.245 0-30.416-9.967-36.087-21.996m85.07-2.576l19.588-11.341c5.157 8.421 11.859 14.607 23.715 14.607c9.969 0 16.325-4.984 16.325-11.858c0-8.248-6.53-11.17-17.528-15.98l-6.013-2.58c-17.357-7.387-28.87-16.667-28.87-36.257c0-18.044 13.747-31.792 35.228-31.792c15.294 0 26.292 5.328 34.196 19.247l-18.732 12.03c-4.125-7.389-8.591-10.31-15.465-10.31c-7.046 0-11.514 4.468-11.514 10.31c0 7.217 4.468 10.14 14.778 14.608l6.014 2.577c20.45 8.765 31.963 17.7 31.963 37.804c0 21.654-17.012 33.51-39.867 33.51c-22.339 0-36.774-10.654-43.819-24.574"/></svg>
+</file>
+
+<file path="frontend/src/assets/vite.svg">
+<svg xmlns="http://www.w3.org/2000/svg" width="77" height="47" fill="none" aria-labelledby="vite-logo-title" viewBox="0 0 77 47"><title id="vite-logo-title">Vite</title><style>.parenthesis{fill:#000}@media (prefers-color-scheme:dark){.parenthesis{fill:#fff}}</style><path fill="#9135ff" d="M40.151 45.71c-.663.844-2.02.374-2.02-.699V34.708a2.26 2.26 0 0 0-2.262-2.262H24.493c-.92 0-1.457-1.04-.92-1.788l7.479-10.471c1.07-1.498 0-3.578-1.842-3.578H15.443c-.92 0-1.456-1.04-.92-1.788l9.696-13.576c.213-.297.556-.474.92-.474h28.894c.92 0 1.456 1.04.92 1.788l-7.48 10.472c-1.07 1.497 0 3.578 1.842 3.578h11.376c.944 0 1.474 1.087.89 1.83L40.153 45.712z"/><mask id="a" width="48" height="47" x="14" y="0" maskUnits="userSpaceOnUse" style="mask-type:alpha"><path fill="#000" d="M40.047 45.71c-.663.843-2.02.374-2.02-.699V34.708a2.26 2.26 0 0 0-2.262-2.262H24.389c-.92 0-1.457-1.04-.92-1.788l7.479-10.472c1.07-1.497 0-3.578-1.842-3.578H15.34c-.92 0-1.456-1.04-.92-1.788l9.696-13.575c.213-.297.556-.474.92-.474H53.93c.92 0 1.456 1.04.92 1.788L47.37 13.03c-1.07 1.498 0 3.578 1.842 3.578h11.376c.944 0 1.474 1.088.89 1.831L40.049 45.712z"/></mask><g mask="url(#a)"><g filter="url(#b)"><ellipse cx="5.508" cy="14.704" fill="#eee6ff" rx="5.508" ry="14.704" transform="rotate(269.814 20.96 11.29)scale(-1 1)"/></g><g filter="url(#c)"><ellipse cx="10.399" cy="29.851" fill="#eee6ff" rx="10.399" ry="29.851" transform="rotate(89.814 -16.902 -8.275)scale(1 -1)"/></g><g filter="url(#d)"><ellipse cx="5.508" cy="30.487" fill="#8900ff" rx="5.508" ry="30.487" transform="rotate(89.814 -19.197 -7.127)scale(1 -1)"/></g><g filter="url(#e)"><ellipse cx="5.508" cy="30.599" fill="#8900ff" rx="5.508" ry="30.599" transform="rotate(89.814 -25.928 4.177)scale(1 -1)"/></g><g filter="url(#f)"><ellipse cx="5.508" cy="30.599" fill="#8900ff" rx="5.508" ry="30.599" transform="rotate(89.814 -25.738 5.52)scale(1 -1)"/></g><g filter="url(#g)"><ellipse cx="14.072" cy="22.078" fill="#eee6ff" rx="14.072" ry="22.078" transform="rotate(93.35 31.245 55.578)scale(-1 1)"/></g><g filter="url(#h)"><ellipse cx="3.47" cy="21.501" fill="#8900ff" rx="3.47" ry="21.501" transform="rotate(89.009 35.419 55.202)scale(-1 1)"/></g><g filter="url(#i)"><ellipse cx="3.47" cy="21.501" fill="#8900ff" rx="3.47" ry="21.501" transform="rotate(89.009 35.419 55.202)scale(-1 1)"/></g><g filter="url(#j)"><ellipse cx="14.592" cy="9.743" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(39.51 14.592 9.743)"/></g><g filter="url(#k)"><ellipse cx="61.728" cy="-5.321" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 61.728 -5.32)"/></g><g filter="url(#l)"><ellipse cx="55.618" cy="7.104" fill="#00c2ff" rx="5.971" ry="9.665" transform="rotate(37.892 55.618 7.104)"/></g><g filter="url(#m)"><ellipse cx="12.326" cy="39.103" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 12.326 39.103)"/></g><g filter="url(#n)"><ellipse cx="12.326" cy="39.103" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 12.326 39.103)"/></g><g filter="url(#o)"><ellipse cx="49.857" cy="30.678" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 49.857 30.678)"/></g><g filter="url(#p)"><ellipse cx="52.623" cy="33.171" fill="#00c2ff" rx="5.971" ry="15.297" transform="rotate(37.892 52.623 33.17)"/></g></g><path d="M6.919 0c-9.198 13.166-9.252 33.575 0 46.789h6.215c-9.25-13.214-9.196-33.623 0-46.789zm62.424 0h-6.215c9.198 13.166 9.252 33.575 0 46.789h6.215c9.25-13.214 9.196-33.623 0-46.789" class="parenthesis"/><defs><filter id="b" width="60.045" height="41.654" x="-5.564" y="16.92" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="7.659"/></filter><filter id="c" width="90.34" height="51.437" x="-40.407" y="-6.762" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="7.659"/></filter><filter id="d" width="79.355" height="29.4" x="-35.435" y="2.801" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="e" width="79.579" height="29.4" x="-30.84" y="20.8" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="f" width="79.579" height="29.4" x="-29.307" y="21.949" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="g" width="74.749" height="58.852" x="29.961" y="-17.13" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="7.659"/></filter><filter id="h" width="61.377" height="25.362" x="37.754" y="3.055" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="i" width="61.377" height="25.362" x="37.754" y="3.055" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="j" width="56.045" height="63.649" x="-13.43" y="-22.082" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="k" width="54.814" height="64.646" x="34.321" y="-37.644" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="l" width="33.541" height="35.313" x="38.847" y="-10.552" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="m" width="54.814" height="64.646" x="-15.081" y="6.78" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="n" width="54.814" height="64.646" x="-15.081" y="6.78" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="o" width="54.814" height="64.646" x="22.45" y="-1.645" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="p" width="39.409" height="43.623" x="32.919" y="11.36" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter></defs></svg>
+</file>
+
+<file path="frontend/src/component/TodoForm.jsx">
+import { useState } from "react";
+
+function TodoForm({onAdd}) {
+
+  const [text, setText] = useState("");
+
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    
+    if (!text.trim()) return;
+
+    onAdd(text);
+
+    setText("");
+  };
+
+
+  return (
+    <form onSubmit={handleSubmit}
+           className="todo-form">
+      <input
+        className="todo-input"
+        type="text"
+        placeholder="Enter task"
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+      />
+
+      <button type="submit"
+              className="add-btn">
+        Add
+      </button>
+    </form>
+  );
+}
+
+export default TodoForm;
+</file>
+
+<file path="frontend/src/component/TodoItem.jsx">
+function TodoItem({
+    todo,
+    onDelete,
+    onToggle
+}) {
+  return (
+    <div className="todo-item">
+       <input
+        type="checkbox"
+        checked={todo.completed}
+        onChange={() => onToggle(todo)}
+      />
+
+      <span   className={
+          todo.completed
+            ? "todo-text completed"
+            : "todo-text"
+        }>
+        {todo.text}
+      </span>
+
+      <button
+           className="delete-btn"
+           onClick={() => onDelete(todo._id)}
+            >
+               Delete
+      </button>
+
+    </div>
+  );
+}
+
+export default TodoItem;
+</file>
+
+<file path="frontend/src/component/TodoList.jsx">
+import TodoItem from "./TodoItem";
+
+function TodoList({
+    todos,
+    onDelete,
+    onToggle
+   
+}) {
+  return (
+    <div>
+         {todos.map((todo) => (
+        <TodoItem
+          key={todo._id}
+          todo={todo}
+          onDelete={onDelete}
+        onToggle={onToggle}
+         
+        />
+      ))}
+    </div>
+  );
+}
+
+export default TodoList;
+</file>
+
+<file path="frontend/src/index.css">
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body{
+  font-family: Arial, Helvetica, sans-serif;
+
+  background-image:  url("./assets/bg.jpg");
+
+  background-size: cover;
+
+  background-position: center;
+
+  background-repeat: no-repeat;
+
+  min-height: 100vh;
+}
+
+.app{
+  min-height: 100vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 20px;
+}
+
+.todo-container{
+  width: 100%;
+  max-width: 500px;
+
+  background-color: white;
+
+  padding: 30px;
+
+  border-radius: 20px;
+
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+
+  animation: fadeIn 0.5s ease;
+
+  transition: transform 0.3s ease;
+}
+
+.todo-container:hover{
+  transform: translateY(-4px);
+}
+
+h1{
+  text-align: center;
+
+  margin-bottom: 20px;
+
+  color: #111827;
+}
+
+.todo-form{
+  display: flex;
+  gap: 10px;
+
+  margin-bottom: 20px;
+}
+
+.todo-input{
+  flex: 1;
+
+  padding: 12px;
+
+  border: 2px solid #d1d5db;
+
+  border-radius: 10px;
+
+  outline: none;
+
+  font-size: 16px;
+
+  transition: all 0.2s ease;
+}
+
+.todo-input:focus{
+  border-color: #2563eb;
+}
+
+.add-btn{
+  padding: 12px 18px;
+
+  border: none;
+
+  background-color: #2563eb;
+
+  color: white;
+
+  border-radius: 10px;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+.add-btn:active{
+  transform: scale(0.96);
+}
+
+.add-btn:hover{
+  background-color: #1e46b5;
+  transform: scale(1.05);
+}
+
+
+.todo-item{
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 12px;
+
+  padding: 14px;
+
+  background-color: #f3f4f6;
+
+  border-radius: 12px;
+
+  margin-bottom: 10px;
+
+  transition: all 0.25s ease;
+}
+
+.todo-item:hover{
+  transform: translateY(-2px);
+
+  background-color: #e5e7eb;
+}
+
+.todo-text{
+  font-size: 16px;
+
+  flex: 1;
+
+  color: #111827;
+}
+
+input[type="checkbox"]{
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+input[type="checkbox"]:hover{
+  transform: scale(1.2);
+}
+
+.completed{
+  text-decoration: line-through;
+
+  opacity: 0.6;
+}
+
+.delete-btn{
+  border: none;
+
+  padding: 8px 12px;
+
+  border-radius: 8px;
+
+  background-color: #ef4444;
+
+  color: white;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+.delete-btn:hover{
+  background-color: #dc2626;
+
+  transform: scale(1.05);
+}
+
+
+@keyframes fadeIn{
+  from{
+    opacity: 0;
+
+    transform: translateY(20px);
+  }
+
+  to{
+    opacity: 1;
+
+    transform: translateY(0);
+  }
+}
+</file>
+
+<file path="frontend/src/main.jsx">
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./app";
+
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <App />
+);
+</file>
+
+<file path="frontend/src/services/api.js">
+import axios from "axios";
+
+const API = axios.create({
+  baseURL: "http://localhost:5000"
+});
+
+
+
+export const getTodos = () => API.get("/todos");
+
+export const createTodo = (todo) =>
+  API.post("/todos", todo);
+
+export const deleteTodo = (id) =>
+  API.delete(`/todos/${id}`);
+
+export const updateTodo = async (id, updatedTodo) => {
+  const response = await axios.put(
+    `${API_URL}/${id}`,
+    updatedTodo
+  );
+
+  return response.data;
+};
+</file>
+
+<file path="README.md">
+# MERN Todo App — Project README
+
+You are building a classic MERN stack Todo App.
+
+Tech Stack:
+- Frontend → React
+- Backend → Node.js + Express
+- Database → MongoDB
+- Communication → REST API using HTTP requests
+
+---
+
+# Main Features
+
+- Add task
+- Show all tasks
+- Mark task as completed using checkbox
+- Delete task
+- Update task
+- Store tasks in MongoDB
+- Real-time UI updates after backend response
+
+---
+
+# Project Goal
+
+Learn:
+1. Frontend ↔ Backend connection
+2. Backend ↔ Database connection
+3. CRUD operations
+4. REST API basics
+5. Full MERN architecture
+6. Real-world project structure
+
+---
+
+# How MERN Flow Works
+
+User writes task in frontend  
+↓  
+React sends request to backend  
+↓  
+Express receives request  
+↓  
+Backend stores data in MongoDB  
+↓  
+MongoDB saves todo  
+↓  
+Backend sends response  
+↓  
+Frontend updates UI
+
+---
+
+# Final Project Structure
+
+```txt
+todo-app/
+│
+├── frontend/
+│
+├── backend/
+│
+└── README.md
+```
+
+---
+
+# Frontend Structure
+
+```txt
+frontend/
+│
+├── public/
+│
+├── src/
+│   │
+│   ├── components/
+│   │   ├── TodoForm.jsx
+│   │   ├── TodoItem.jsx
+│   │   └── TodoList.jsx
+│   │
+│   ├── pages/
+│   │   └── Home.jsx
+│   │
+│   ├── services/
+│   │   └── api.js
+│   │
+│   ├── App.jsx
+│   ├── main.jsx
+│   └── index.css
+│
+├── package.json
+└── vite.config.js
+```
+
+---
+
+# Frontend Folder Explanation
+
+## components/
+Reusable UI pieces.
+
+### TodoForm.jsx
+Handles:
+- Input field
+- Add button
+- Sending todo to backend
+
+### TodoItem.jsx
+Handles:
+- Checkbox
+- Delete button
+- Single todo display
+
+### TodoList.jsx
+Loops through all todos.
+
+---
+
+## pages/
+Contains website pages.
+
+### Home.jsx
+Main page of application.
+
+---
+
+## services/
+Contains API requests.
+
+### api.js
+Frontend communicates with backend here.
+
+Example:
+```js
+fetch("http://localhost:5000/todos")
+```
+
+---
+
+## App.jsx
+Main root component.
+
+---
+
+## main.jsx
+Entry point of React app.
+
+---
+
+# Backend Structure
+
+```txt
+backend/
+│
+├── config/
+│   └── db.js
+│
+├── controllers/
+│   └── todoController.js
+│
+├── models/
+│   └── Todo.js
+│
+├── routes/
+│   └── todoRoutes.js
+│
+├── server.js
+├── package.json
+└── .env
+```
+
+---
+
+# Backend Folder Explanation
+
+## config/db.js
+Connects backend to MongoDB.
+
+---
+
+## models/Todo.js
+Defines todo schema.
+
+Example:
+```js
+{
+  text: String,
+  completed: Boolean
+}
+```
+
+---
+
+## controllers/todoController.js
+Contains backend logic:
+- Create todo
+- Get todos
+- Update todo
+- Delete todo
+
+---
+
+## routes/todoRoutes.js
+Defines API routes.
+
+Example:
+```txt
+GET    /todos
+POST   /todos
+PUT    /todos/:id
+DELETE /todos/:id
+```
+
+---
+
+## server.js
+Main backend file.
+
+Responsibilities:
+- Start server
+- Use middleware
+- Connect routes
+- Connect database
+
+---
+
+# Database Structure (MongoDB)
+
+```txt
+Database
+   ↓
+Collections
+   ↓
+Documents
+```
+
+Our structure:
+
+```txt
+todoDB
+   └── todos
+          └── {
+                _id,
+                text,
+                completed
+              }
+```
+
+---
+
+# Example Todo Document
+
+```json
+{
+  "_id": "682f123abc",
+  "text": "Learn MERN stack",
+  "completed": false
+}
+```
+
+---
+
+# API Endpoints
+
+## Get Todos
+
+```http
+GET /todos
+```
+
+---
+
+## Add Todo
+
+```http
+POST /todos
+```
+
+Body:
+```json
+{
+  "text": "Learn Backend"
+}
+```
+
+---
+
+## Update Todo
+
+```http
+PUT /todos/:id
+```
+
+---
+
+## Delete Todo
+
+```http
+DELETE /todos/:id
+```
+
+---
+
+# Recommended Packages
+
+## Backend
+
+```bash
+npm install express mongoose cors dotenv nodemon
+```
+
+Purpose:
+- express → backend framework
+- mongoose → MongoDB
+- cors → frontend/backend communication
+- dotenv → environment variables
+- nodemon → auto restart
+
+---
+
+## Frontend
+
+```bash
+npm install axios
+```
+
+Purpose:
+- axios → API requests
+
+---
+
+# Environment Variables
+
+Create `.env` inside backend:
+
+```env
+PORT=5000
+MONGO_URI=your_mongodb_connection_string
+```
+
+---
+
+# DEVELOPMENT ROADMAP (VERY IMPORTANT)
+
+# Phase 1 — Project Setup
+
+Goal:
+Create frontend and backend folders.
+
+Tasks:
+- Create project folder
+- Setup React using Vite
+- Setup Express backend
+- Install dependencies
+- Run frontend and backend servers
+
+teach me:
+- How React starts
+- How Express server starts
+- Folder structure
+
+---
+
+# Phase 2 — Backend Basics
+
+Goal:
+Create working backend server.
+
+Tasks:
+- Create Express server
+- Use middleware
+- Create first route
+- Test server in browser/Postman
+
+teach me:
+- app.listen()
+- app.use()
+- req and res
+- Routes
+
+---
+
+# Phase 3 — MongoDB Connection
+
+Goal:
+Connect backend with MongoDB.
+
+Tasks:
+- Create MongoDB database
+- Install mongoose
+- Create db connection
+- Create Todo schema/model
+
+teach me:
+- Database connection
+- Models
+- Collections
+- Documents
+
+---
+
+# Phase 4 — Create Todo API
+
+Goal:
+Create CRUD operations.
+
+Tasks:
+- GET todos
+- POST todo
+- PUT update todo
+- DELETE todo
+
+teach me:
+- CRUD operations
+- REST API
+- HTTP methods
+
+---
+
+# Phase 5 — Build Frontend UI
+
+Goal:
+Create todo interface.
+
+Tasks:
+- Create input field
+- Create add button
+- Create todo list
+- Create checkbox
+- Create delete button
+
+teach me:
+- React components
+- Props
+- useState
+
+---
+
+# Phase 6 — Frontend ↔ Backend Connection
+
+Goal:
+Connect React with backend.
+
+Tasks:
+- Fetch todos from backend
+- Add todo from frontend
+- Update todo
+- Delete todo
+
+teach me:
+- API calls
+- fetch / axios
+- async-await
+
+---
+
+# Phase 7 — State Management
+
+Goal:
+Update UI dynamically.
+
+Tasks:
+- Store todos in state
+- Re-render UI after changes
+- Handle loading/errors
+
+teach me:
+- React state
+- Re-rendering
+- Data flow
+
+---
+
+# Phase 8 — Styling
+
+Goal:
+Make app look good.
+
+Tasks:
+- Responsive layout
+- Better spacing
+- Hover effects
+- Empty state UI
+
+teach me:
+- CSS basics
+- Layouts
+- Responsive design
+
+---
+
+# Phase 9 — Final Improvements
+
+Goal:
+Add advanced features.
+
+Possible Features:
+- Dark mode
+- Filters
+- Search
+- Due dates
+- Authentication
+- Drag & drop
+- Deployment
+
+---
+
+# Important Learning Mindset
+
+Do NOT memorize code.
+
+Focus on understanding:
+- Why folders exist
+- How data flows
+- Why frontend/backend are separated
+- How requests move through app
+
+Once flow becomes clear, MERN becomes much easier.
+
+---
+
+# Final Learning Outcome
+
+After completing this project you will know:
+- React fundamentals
+- Express fundamentals
+- MongoDB basics
+- REST APIs
+- CRUD operations
+- Full-stack architecture
+- Real-world project structure
+- Frontend/backend communication
+</file>
+
+</files>
