@@ -356,10 +356,7 @@ Tasks:
 - Install dependencies
 - Run frontend and backend servers
 
-teach me:
-- How React starts
-- How Express server starts
-- Folder structure
+
 
 ---
 
@@ -374,11 +371,7 @@ Tasks:
 - Create first route
 - Test server in browser/Postman
 
-teach me:
-- app.listen()
-- app.use()
-- req and res
-- Routes
+
 
 ---
 
@@ -393,11 +386,7 @@ Tasks:
 - Create db connection
 - Create Todo schema/model
 
-teach me:
-- Database connection
-- Models
-- Collections
-- Documents
+
 
 ---
 
@@ -412,10 +401,6 @@ Tasks:
 - PUT update todo
 - DELETE todo
 
-teach me:
-- CRUD operations
-- REST API
-- HTTP methods
 
 ---
 
@@ -431,10 +416,7 @@ Tasks:
 - Create checkbox
 - Create delete button
 
-teach me:
-- React components
-- Props
-- useState
+
 
 ---
 
@@ -449,10 +431,7 @@ Tasks:
 - Update todo
 - Delete todo
 
-teach me:
-- API calls
-- fetch / axios
-- async-await
+
 
 ---
 
@@ -466,10 +445,7 @@ Tasks:
 - Re-render UI after changes
 - Handle loading/errors
 
-teach me:
-- React state
-- Re-rendering
-- Data flow
+
 
 ---
 
@@ -484,10 +460,6 @@ Tasks:
 - Hover effects
 - Empty state UI
 
-teach me:
-- CSS basics
-- Layouts
-- Responsive design
 
 ---
 
@@ -507,28 +479,3 @@ Possible Features:
 
 ---
 
-# Important Learning Mindset
-
-Do NOT memorize code.
-
-Focus on understanding:
-- Why folders exist
-- How data flows
-- Why frontend/backend are separated
-- How requests move through app
-
-Once flow becomes clear, MERN becomes much easier.
-
----
-
-# Final Learning Outcome
-
-After completing this project you will know:
-- React fundamentals
-- Express fundamentals
-- MongoDB basics
-- REST APIs
-- CRUD operations
-- Full-stack architecture
-- Real-world project structure
-- Frontend/backend communication
