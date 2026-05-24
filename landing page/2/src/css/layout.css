@@ -46,23 +46,24 @@ nav {
   margin-bottom: 1rem;
 }
 
-.hero p {
-  margin-bottom: 2rem;
-}
+
 /* 4️⃣ Featured section layout */
 .featured {
-  margin-top: 4rem;
+  margin-top: 5rem;
 }
 
 .featured figure {
   display: flex;
-  gap: 2rem;
-  align-items: center;
+  gap: 2.5rem;
+  align-items:flex-start;
 }
 
 .featured img {
-  width: 350px;
-  border-radius: 10px;
+  width: 360px;
+  border-radius: 12px;
+  object-fit: cover;
+
+
 }
 
 /* 5️⃣ Stats section layout */
