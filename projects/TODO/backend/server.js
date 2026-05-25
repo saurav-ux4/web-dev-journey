@@ -15,7 +15,7 @@ const PORT =process.env.PORT|| 5000;
 // Middleware
 app.use(express.json());
 app.use(cors({
-     origin:"https://todo-psi-seven-21.vercel.app"
+     origin:"https://todo-saurav982216-6629s-projects.vercel.app/"
 }
 ));
 
