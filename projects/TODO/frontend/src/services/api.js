@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://todo-app-hbze.onrender.com"
+  baseURL: "https://web-dev-journey-pxj9.onrender.com"
 });
 
 
