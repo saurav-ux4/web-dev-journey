@@ -1,3 +1,5 @@
+import { io } from "socket.io-client";
+
 import { useContext,useEffect,useState } from "react";
 
 import { AuthContext } from "../context/AuthContext";
@@ -10,6 +12,9 @@ import ChatBox from "../components/ChatBox";
 
 import MessageInput from "../components/MessageInput";
 
+ const socket = io("http://localhost:5000");
+
+
 function Home() {
  const { user } = useContext(AuthContext);
 
@@ -19,8 +24,9 @@ function Home() {
 
   const [messages, setMessages] = useState([]);
 
-   const [selectedGroup, setSelectedGroup] = useState(null);
+  const [selectedGroup, setSelectedGroup] = useState(null);
 
+ 
 
   // LOAD GROUPS
   useEffect(() => {
@@ -96,8 +102,11 @@ function Home() {
         }
 
       );
-
-      setMessages([...messages, res.data]);
+    
+       socket.emit(
+        "sendMessage",
+         res.data
+        );
 
     } catch (error) {
 
@@ -110,23 +119,74 @@ function Home() {
 
 
 useEffect(() => {
+
   if (!selectedGroup) return;
 
+  socket.emit(
+    "joinGroup",
+    selectedGroup._id
+  );
+
   const loadMessages = async () => {
+
     try {
-      const res = await API.get(`/messages/${selectedGroup._id}`, {
-        headers: {
-          Authorization: `Bearer ${user.token}`
+
+      const res = await API.get(
+
+        `/messages/${selectedGroup._id}`,
+
+        {
+          headers: {
+            Authorization: `Bearer ${user.token}`
+          }
         }
-      });
+
+      );
+
       setMessages(res.data);
+
     } catch (error) {
+
       console.log(error);
+
     }
+
   };
 
   loadMessages();
-}, [selectedGroup,user]);
+
+}, [selectedGroup, user]);
+
+
+
+
+useEffect(() => {
+
+  socket.on(
+
+    "receiveMessage",
+
+    (message) => {
+
+      setMessages((prev) => [
+
+        ...prev,
+        message
+
+      ]);
+
+    }
+
+  );
+
+  return () => {
+
+    socket.off("receiveMessage");
+
+  };
+
+}, []);
+
 
  return (
 
