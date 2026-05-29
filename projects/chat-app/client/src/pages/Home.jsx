@@ -1,37 +1,107 @@
-import { useContext } from "react";
+import { useContext,useEffect,useState } from "react";
 
 import { AuthContext } from "../context/AuthContext";
 
+import API from "../services/api";
+
 function Home() {
  const { user } = useContext(AuthContext);
+
+ const [groups, setGroups] = useState([]);
+
+  const [groupName, setGroupName] = useState("");
+
+
+  // LOAD GROUPS
+  useEffect(() => {
+  const loadGroups = async () => {
+    try {
+      const res = await API.get("/groups", {
+        headers: {
+          Authorization: `Bearer ${user.token}`
+        }
+      });
+      setGroups(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  loadGroups();
+}, [user]);
+
+  // CREATE GROUP
+  const createGroup = async () => {
+
+    try {
+
+      const res = await API.post(
+
+        "/groups",
+
+        {
+          name: groupName
+        },
+
+        {
+          headers: {
+            Authorization: `Bearer ${user.token}`
+          }
+        }
+
+      );
+
+      setGroups([...groups, res.data]);
+
+      setGroupName("");
+
+    } catch (error) {
+
+      console.log(error);
+
+    }
+
+  };
+
 
  return (
 
     <div>
 
-      <h1>Home Page</h1>
+      <h1>welcome {user.name}</h1>
 
-      {user ? (
+      <br />
+       
+       <input
+        type="text"
+        placeholder="Group Name"
+        value={groupName}
+        onChange={(e) => setGroupName(e.target.value)}
+      />
 
-        <div>
+     <button onClick={createGroup}>
+        Create Group
+      </button>
 
-          <h2>
-            Welcome {user.name}
-          </h2>
+       <hr />
 
-          <p>
-            {user.email}
-          </p>
+      <h2>Your Groups</h2>
+ 
+  {
 
-        </div>
+        groups.map((group) => (
 
-      ) : (
+          <div key={group._id}>
 
-        <h2>
-          Please Login
-        </h2>
+            <h3>
+              {group.name}
+            </h3>
 
-      )}
+          </div>
+
+        ))
+
+      }
 
     </div>
   );
