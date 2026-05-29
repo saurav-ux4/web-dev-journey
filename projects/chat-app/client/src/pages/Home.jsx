@@ -4,12 +4,22 @@ import { AuthContext } from "../context/AuthContext";
 
 import API from "../services/api";
 
+import Sidebar from "../components/Sidebar";
+
+import ChatBox from "../components/ChatBox";
+
+import MessageInput from "../components/MessageInput";
+
 function Home() {
  const { user } = useContext(AuthContext);
 
  const [groups, setGroups] = useState([]);
 
   const [groupName, setGroupName] = useState("");
+
+  const [messages, setMessages] = useState([]);
+
+   const [selectedGroup, setSelectedGroup] = useState(null);
 
 
   // LOAD GROUPS
@@ -64,46 +74,147 @@ function Home() {
   };
 
 
+
+  // SEND MESSAGE
+  const sendMessage = async (content) => {
+
+    try {
+
+      const res = await API.post(
+
+        "/messages",
+
+        {
+          groupId: selectedGroup._id,
+          content
+        },
+
+        {
+          headers: {
+            Authorization: `Bearer ${user.token}`
+          }
+        }
+
+      );
+
+      setMessages([...messages, res.data]);
+
+    } catch (error) {
+
+      console.log(error);
+
+    }
+
+  };
+
+
+
+useEffect(() => {
+  if (!selectedGroup) return;
+
+  const loadMessages = async () => {
+    try {
+      const res = await API.get(`/messages/${selectedGroup._id}`, {
+        headers: {
+          Authorization: `Bearer ${user.token}`
+        }
+      });
+      setMessages(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  loadMessages();
+}, [selectedGroup,user]);
+
  return (
 
-    <div>
+    <div 
+        style={{
+        display: "flex",
+        height: "100vh"
+      }}
+    >
 
-      <h1>welcome {user.name}</h1>
 
-      <br />
-       
-       <input
-        type="text"
-        placeholder="Group Name"
-        value={groupName}
-        onChange={(e) => setGroupName(e.target.value)}
+    <Sidebar
+        groups={groups}
+        selectedGroup={selectedGroup}
+        setSelectedGroup={setSelectedGroup}
       />
 
-     <button onClick={createGroup}>
-        Create Group
-      </button>
 
-       <hr />
+       <div
+        style={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column"
+        }}
+      >
 
-      <h2>Your Groups</h2>
- 
-  {
 
-        groups.map((group) => (
+         <div
+          style={{
+            padding: "10px",
+            borderBottom: "1px solid gray"
+          }}
+        >
 
-          <div key={group._id}>
-
-            <h3>
-              {group.name}
-            </h3>
+             <h2>
+            {selectedGroup
+              ? selectedGroup.name
+              : "Select Group"}
+          </h2>
 
           </div>
 
-        ))
 
-      }
+          <ChatBox 
+          messages={messages}
+          user={user}
+          />
 
-    </div>
+
+
+            {
+
+          selectedGroup && (
+
+            <MessageInput
+              sendMessage={sendMessage}
+            />
+
+          )
+
+        }
+
+        <div
+          style={{
+            padding: "10px"
+          }}
+        >
+
+          <input
+            type="text"
+            placeholder="New Group"
+            value={groupName}
+            onChange={(e) =>
+              setGroupName(e.target.value)
+            }
+          />
+
+           <button onClick={createGroup}>
+            Create Group
+          </button>
+
+          </div>
+          
+        </div>
+
+      </div>
+
+    
   );
 }
 
