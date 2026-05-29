@@ -22,6 +22,8 @@ function Home() {
 
   const [groupName, setGroupName] = useState("");
 
+  const [memberEmail, setMemberEmail] = useState("");
+
   const [messages, setMessages] = useState([]);
 
   const [selectedGroup, setSelectedGroup] = useState(null);
@@ -79,6 +81,42 @@ function Home() {
 
   };
 
+
+  // ADD MEMBER
+const addMember = async () => {
+
+  try {
+
+    await API.put(
+
+      "/groups/add-member",
+
+      {
+        groupId: selectedGroup._id,
+        email: memberEmail
+      },
+
+      {
+        headers: {
+          Authorization: `Bearer ${user.token}`
+        }
+      }
+
+    );
+
+    alert("Member Added");
+
+    setMemberEmail("");
+
+  } catch (error) {
+
+    console.log(error);
+
+    alert(error.response.data.message);
+
+  }
+
+};
 
 
   // SEND MESSAGE
@@ -248,6 +286,36 @@ useEffect(() => {
           )
 
         }
+
+
+        {
+
+  selectedGroup && (
+
+    <div
+      style={{
+        padding: "10px"
+      }}
+    >
+
+      <input
+        type="email"
+        placeholder="Add member by email"
+        value={memberEmail}
+        onChange={(e) =>
+          setMemberEmail(e.target.value)
+        }
+      />
+
+      <button onClick={addMember}>
+        Add Member
+      </button>
+
+    </div>
+
+  )
+
+}
 
         <div
           style={{
