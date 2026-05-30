@@ -66,6 +66,21 @@ function ChatBox({ messages, user }) {
 
             {msg.content}
 
+              {" "}
+
+<small>
+
+  (
+    {new Date(
+      msg.createdAt
+    ).toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit"
+    })}
+  )
+
+</small>
+
           </div>
 
         ))
