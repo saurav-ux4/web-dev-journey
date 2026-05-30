@@ -58,30 +58,16 @@ const socketHandler = (io) => {
         // ==============================
 
            socket.on("typing", ({ groupId, userName }) => {
-
-    console.log("TYPING RECEIVED");
-    console.log(groupId);
-    console.log(userName);
-
-    socket.to(groupId).emit(
-        "user_typing",
-        userName
-    );
-
-});
+           socket.to(groupId).emit("user_typing", { groupId, userName });
+           });
 
         // ==============================
         // STOP TYPING
         // ==============================
 
-        socket.on("stop_typing", (groupId) => {
-
-            socket.to(groupId).emit(
-                "user_stop_typing"
-            );
-
-        });
-
+         socket.on("stop_typing", (groupId) => {
+         socket.to(groupId).emit("user_stop_typing", { groupId });
+          });
         // ==============================
         // DISCONNECT
         // ==============================
