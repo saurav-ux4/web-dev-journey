@@ -1,9 +1,20 @@
-import { useContext } from "react";
+import { useContext,useEffect,useRef } from "react";
 import { SocketContext } from "../context/SocketContext";
 
 function ChatBox({ messages, user }) {
 
   const { typingUser } = useContext(SocketContext);
+  const bottomRef = useRef(null);
+
+
+  useEffect(() => {
+
+  bottomRef.current?.scrollIntoView({
+    behavior: "smooth"
+  });
+
+}, [messages]);
+
 
   return (
 
@@ -11,6 +22,7 @@ function ChatBox({ messages, user }) {
       style={{
         flex: 1,
         padding: "10px",
+        overflowY:"auto"
         
       }}
     >
@@ -59,6 +71,8 @@ function ChatBox({ messages, user }) {
         ))
 
       }
+
+      <div ref={bottomRef}></div>
 
     </div>
 
