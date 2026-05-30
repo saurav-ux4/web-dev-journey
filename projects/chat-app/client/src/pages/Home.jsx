@@ -14,7 +14,10 @@ import MessageInput from "../components/MessageInput";
 import { SocketContext } from "../context/SocketContext";
 
 function Home() {
-  const { socket } = useContext(SocketContext);
+  const {
+          socket,
+          onlineUsers
+         } = useContext(SocketContext);
 
   const { user } = useContext(AuthContext);
 
@@ -261,11 +264,40 @@ useEffect(() => {
           }}
         >
 
-             <h2>
-            {selectedGroup
-              ? selectedGroup.name
-              : "Select Group"}
-          </h2>
+            
+         <div>
+
+  <h2>
+    {selectedGroup
+      ? selectedGroup.name
+      : "Select Group"}
+  </h2>
+
+  {
+
+    selectedGroup?.members?.map((memberId) => (
+
+      <div key={memberId}>
+
+        {
+
+          onlineUsers.includes(memberId)
+
+            ? "🟢 Online"
+
+            : "⚫ Offline"
+
+        }
+
+      </div>
+
+    ))
+
+  }
+
+</div>
+
+
 
           </div>
 
