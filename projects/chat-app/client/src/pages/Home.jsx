@@ -302,10 +302,18 @@ useEffect(() => {
           </div>
 
 
-          <ChatBox 
-          messages={messages}
-          user={user}
-          />
+          <div
+  style={{
+    background: "yellow"
+  }}
+>
+  CHATBOX START
+</div>
+
+<ChatBox
+  messages={messages}
+  user={user}
+/>
 
 
 
@@ -315,6 +323,8 @@ useEffect(() => {
 
             <MessageInput
               sendMessage={sendMessage}
+              groupId={selectedGroup._id}
+              userName={user.name}
             />
 
           )

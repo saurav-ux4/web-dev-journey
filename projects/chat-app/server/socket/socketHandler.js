@@ -57,14 +57,18 @@ const socketHandler = (io) => {
         // TYPING
         // ==============================
 
-        socket.on("typing", ({ groupId, userName }) => {
+           socket.on("typing", ({ groupId, userName }) => {
 
-            socket.to(groupId).emit(
-                "user_typing",
-                userName
-            );
+    console.log("TYPING RECEIVED");
+    console.log(groupId);
+    console.log(userName);
 
-        });
+    socket.to(groupId).emit(
+        "user_typing",
+        userName
+    );
+
+});
 
         // ==============================
         // STOP TYPING

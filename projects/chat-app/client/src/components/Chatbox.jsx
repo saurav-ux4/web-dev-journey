@@ -1,35 +1,49 @@
+import { useContext } from "react";
+import { SocketContext } from "../context/SocketContext";
+
 function ChatBox({ messages, user }) {
+
+  const { typingUser } = useContext(SocketContext);
 
   return (
 
     <div
       style={{
         flex: 1,
-        padding: "10px"
+        padding: "10px",
+        
       }}
     >
 
-      <h2>Messages</h2>
+     
+
+     {
+    typingUser && (
+         <div
+                style={{
+                         marginBottom: "10px",
+                         fontStyle: "italic"
+                       }}
+                  >
+                    {typingUser} is typing...
+         </div>
+  )
+}
+
+      
 
       {
 
         messages.map((msg) => (
 
-          <div
-            key={msg._id}
-            style={{
-              marginBottom: "10px"
-            }}
-          >
+          <div key={msg._id}>
 
             <strong>
 
               {
-
                 msg.sender._id === user._id
                   ? "You"
                   : msg.sender.name
-
               }
 
               :
@@ -47,7 +61,9 @@ function ChatBox({ messages, user }) {
       }
 
     </div>
+
   );
+
 }
 
 export default ChatBox;

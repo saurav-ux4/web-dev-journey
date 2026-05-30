@@ -475,42 +475,40 @@ export default App;
 </file>
 
 <file path="client/src/components/Chatbox.jsx">
+import { useContext } from "react";
+import { SocketContext } from "../context/SocketContext";
+
 function ChatBox({ messages, user }) {
 
-  return (
+  const { typingUser } = useContext(SocketContext);
 
+  return (
     <div
       style={{
         flex: 1,
-        padding: "10px"
+        padding: "10px",
+        background: "yellow"
       }}
     >
 
-      <h2>Messages</h2>
+      <h1>CHATBOX COMPONENT</h1>
+
+      <h2>Typing User: {typingUser}</h2>
+
+      <hr />
 
       {
-
         messages.map((msg) => (
 
-          <div
-            key={msg._id}
-            style={{
-              marginBottom: "10px"
-            }}
-          >
+          <div key={msg._id}>
 
             <strong>
-
               {
-
                 msg.sender._id === user._id
                   ? "You"
                   : msg.sender.name
-
               }
-
               :
-
             </strong>
 
             {" "}
@@ -520,7 +518,6 @@ function ChatBox({ messages, user }) {
           </div>
 
         ))
-
       }
 
     </div>
@@ -531,11 +528,52 @@ export default ChatBox;
 </file>
 
 <file path="client/src/components/MessageInput.jsx">
-import { useState } from "react";
+import { useState, useRef, useContext } from "react";
 
-function MessageInput({ sendMessage }) {
+import { SocketContext } from "../context/SocketContext";
+
+function MessageInput({
+  sendMessage,
+  groupId,
+  userName
+}) {
+
+  const { socket } = useContext(SocketContext);
 
   const [message, setMessage] = useState("");
+
+  const typingTimeoutRef = useRef(null);
+
+  const handleChange = (e) => {
+
+    const value = e.target.value;
+
+    setMessage(value);
+
+    console.log("TYPING EMITTED");
+    
+    socket.emit(
+      "typing",
+      {
+        groupId,
+        userName
+      }
+    );
+
+    clearTimeout(
+      typingTimeoutRef.current
+    );
+
+    typingTimeoutRef.current = setTimeout(() => {
+
+      socket.emit(
+        "stop_typing",
+        groupId
+      );
+
+    }, 1000);
+
+  };
 
   const handleSend = () => {
 
@@ -544,6 +582,11 @@ function MessageInput({ sendMessage }) {
     sendMessage(message);
 
     setMessage("");
+
+    socket.emit(
+      "stop_typing",
+      groupId
+    );
 
   };
 
@@ -555,7 +598,7 @@ function MessageInput({ sendMessage }) {
         type="text"
         placeholder="Type message..."
         value={message}
-        onChange={(e) => setMessage(e.target.value)}
+        onChange={handleChange}
       />
 
       <button onClick={handleSend}>
@@ -563,6 +606,7 @@ function MessageInput({ sendMessage }) {
       </button>
 
     </div>
+
   );
 }
 
@@ -771,14 +815,16 @@ export const SocketContext = createContext();
 </file>
 
 <file path="client/src/context/SocketProvider.jsx">
-import { useEffect, useState } from "react";
+import { useEffect, useState,useContext } from "react";
 import { io } from "socket.io-client";
+import { AuthContext } from "./AuthContext";
 
 import { SocketContext } from "./SocketContext";
 
 const socket = io("http://localhost:5000");
 
-const SocketProvider = ({ children, user }) => {
+const SocketProvider = ({ children}) => {
+  const { user } = useContext(AuthContext);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [typingUser, setTypingUser] = useState("");
 
@@ -799,13 +845,24 @@ const SocketProvider = ({ children, user }) => {
   }, []);
 
   useEffect(() => {
-    socket.on("user_typing", (userName) => {
-      setTypingUser(userName);
-    });
+      socket.on("user_typing", (userName) => {
 
-    socket.on("user_stop_typing", () => {
-      setTypingUser("");
-    });
+  console.log("USER_TYPING RECEIVED");
+  console.log(userName);
+
+  setTypingUser(userName);
+
+});
+
+
+socket.on("user_stop_typing", () => {
+
+  console.log("STOP_TYPING RECEIVED");
+
+  setTypingUser("");
+
+});
+    
 
     return () => {
       socket.off("user_typing");
@@ -836,7 +893,7 @@ export default SocketProvider;
 <file path="client/src/main.jsx">
 import React from "react";
 import ReactDOM from "react-dom/client";
-
+import SocketProvider from "./context/SocketProvider.jsx";
 import App from "./App.jsx";
 
 import AuthProvider from "./context/AuthProvider.jsx";
@@ -846,8 +903,11 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
 
     <AuthProvider>
-
-      <App />
+      
+       <SocketProvider>
+           <App />
+       </SocketProvider>
+     
 
     </AuthProvider>
 
@@ -857,8 +917,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
 </file>
 
 <file path="client/src/pages/Home.jsx">
-import { io } from "socket.io-client";
-
 import { useContext,useEffect,useState } from "react";
 
 import { AuthContext } from "../context/AuthContext";
@@ -871,13 +929,17 @@ import ChatBox from "../components/ChatBox";
 
 import MessageInput from "../components/MessageInput";
 
- const socket = io("http://localhost:5000");
-
+import { SocketContext } from "../context/SocketContext";
 
 function Home() {
- const { user } = useContext(AuthContext);
+  const {
+          socket,
+          onlineUsers
+         } = useContext(SocketContext);
 
- const [groups, setGroups] = useState([]);
+  const { user } = useContext(AuthContext);
+
+  const [groups, setGroups] = useState([]);
 
   const [groupName, setGroupName] = useState("");
 
@@ -1001,8 +1063,8 @@ const addMember = async () => {
       );
     
        socket.emit(
-        "sendMessage",
-         res.data
+       "send_message",
+        res.data
         );
 
     } catch (error) {
@@ -1019,9 +1081,9 @@ useEffect(() => {
 
   if (!selectedGroup) return;
 
-  socket.emit(
-    "joinGroup",
-    selectedGroup._id
+    socket.emit(
+     "join_group",
+     selectedGroup._id
   );
 
   const loadMessages = async () => {
@@ -1052,7 +1114,7 @@ useEffect(() => {
 
   loadMessages();
 
-}, [selectedGroup, user]);
+}, [selectedGroup, user, socket]);
 
 
 
@@ -1061,9 +1123,11 @@ useEffect(() => {
 
   socket.on(
 
-    "receiveMessage",
+    "receive_message",
 
     (message) => {
+
+         console.log("RECEIVED MESSAGE:", message);
 
       setMessages((prev) => [
 
@@ -1078,11 +1142,11 @@ useEffect(() => {
 
   return () => {
 
-    socket.off("receiveMessage");
+    socket.off("receive_message");
 
   };
 
-}, []);
+}, [socket]);
 
 
  return (
@@ -1118,19 +1182,56 @@ useEffect(() => {
           }}
         >
 
-             <h2>
-            {selectedGroup
-              ? selectedGroup.name
-              : "Select Group"}
-          </h2>
+            
+         <div>
+
+  <h2>
+    {selectedGroup
+      ? selectedGroup.name
+      : "Select Group"}
+  </h2>
+
+  {
+
+    selectedGroup?.members?.map((memberId) => (
+
+      <div key={memberId}>
+
+        {
+
+          onlineUsers.includes(memberId)
+
+            ? "🟢 Online"
+
+            : "⚫ Offline"
+
+        }
+
+      </div>
+
+    ))
+
+  }
+
+</div>
+
+
 
           </div>
 
 
-          <ChatBox 
-          messages={messages}
-          user={user}
-          />
+          <div
+  style={{
+    background: "yellow"
+  }}
+>
+  CHATBOX START
+</div>
+
+<ChatBox
+  messages={messages}
+  user={user}
+/>
 
 
 
@@ -1140,6 +1241,8 @@ useEffect(() => {
 
             <MessageInput
               sendMessage={sendMessage}
+              groupId={selectedGroup._id}
+              userName={user.name}
             />
 
           )
@@ -1989,6 +2092,7 @@ export default router;
 </file>
 
 <file path="server/server.js">
+import socketHandler from "./socket/socketHandler.js";
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
@@ -2038,40 +2142,7 @@ app.use("/api/groups", groupRoutes);
 
 
 // SOCKET.IO
-io.on("connection", (socket) => {
-
-  console.log("User Connected:", socket.id);
-
-
-   // JOIN GROUP ROOM
-  socket.on("joinGroup", (groupId) => {
-
-    socket.join(groupId);
-
-    console.log(`Joined Group: ${groupId}`);
-
-  });
-
-
-  // SEND MESSAGE
-  socket.on("sendMessage", (message) => {
-
-    io.to(message.group._id).emit(
-      "receiveMessage",
-      message
-    );
-
-  });
-
-  socket.on("disconnect", () => {
-
-    console.log("User Disconnected");
-
-  });
-
-});
-
-
+socketHandler(io); //-----newly added , maybe wrong!!!!
 
 const PORT = process.env.PORT || 5000;
 
@@ -2114,6 +2185,8 @@ const socketHandler = (io) => {
 
         socket.on("join_group", (groupId) => {
 
+            
+
             socket.join(groupId);
 
             console.log(`Socket joined group: ${groupId}`);
@@ -2124,27 +2197,34 @@ const socketHandler = (io) => {
         // SEND MESSAGE
         // ==============================
 
-        socket.on("send_message", (messageData) => {
+           socket.on("send_message", (messageData) => {
 
-            io.to(messageData.group).emit(
-                "receive_message",
-                messageData
-            );
+        const groupId = messageData.group._id;
 
-        });
+              
 
+                io.to(groupId).emit(
+                    "receive_message",
+                     messageData
+                     );
+
+            });
         // ==============================
         // TYPING
         // ==============================
 
-        socket.on("typing", ({ groupId, userName }) => {
+           socket.on("typing", ({ groupId, userName }) => {
 
-            socket.to(groupId).emit(
-                "user_typing",
-                userName
-            );
+    console.log("TYPING RECEIVED");
+    console.log(groupId);
+    console.log(userName);
 
-        });
+    socket.to(groupId).emit(
+        "user_typing",
+        userName
+    );
+
+});
 
         // ==============================
         // STOP TYPING
@@ -2183,7 +2263,7 @@ const socketHandler = (io) => {
 
 };
 
-module.exports = socketHandler;
+export default socketHandler;
 </file>
 
 <file path="server/utils/generateToken.js">

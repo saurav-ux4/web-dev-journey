@@ -28,13 +28,24 @@ const SocketProvider = ({ children}) => {
   }, []);
 
   useEffect(() => {
-    socket.on("user_typing", (userName) => {
-      setTypingUser(userName);
-    });
+      socket.on("user_typing", (userName) => {
 
-    socket.on("user_stop_typing", () => {
-      setTypingUser("");
-    });
+  console.log("USER_TYPING RECEIVED");
+  console.log(userName);
+
+  setTypingUser(userName);
+
+});
+
+
+socket.on("user_stop_typing", () => {
+
+  console.log("STOP_TYPING RECEIVED");
+
+  setTypingUser("");
+
+});
+    
 
     return () => {
       socket.off("user_typing");

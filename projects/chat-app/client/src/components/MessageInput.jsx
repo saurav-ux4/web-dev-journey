@@ -1,8 +1,49 @@
-import { useState } from "react";
+import { useState, useRef, useContext } from "react";
 
-function MessageInput({ sendMessage }) {
+import { SocketContext } from "../context/SocketContext";
+
+function MessageInput({
+  sendMessage,
+  groupId,
+  userName
+}) {
+
+  const { socket } = useContext(SocketContext);
 
   const [message, setMessage] = useState("");
+
+  const typingTimeoutRef = useRef(null);
+
+  const handleChange = (e) => {
+
+    const value = e.target.value;
+
+    setMessage(value);
+
+    console.log("TYPING EMITTED");
+    
+    socket.emit(
+      "typing",
+      {
+        groupId,
+        userName
+      }
+    );
+
+    clearTimeout(
+      typingTimeoutRef.current
+    );
+
+    typingTimeoutRef.current = setTimeout(() => {
+
+      socket.emit(
+        "stop_typing",
+        groupId
+      );
+
+    }, 1000);
+
+  };
 
   const handleSend = () => {
 
@@ -11,6 +52,11 @@ function MessageInput({ sendMessage }) {
     sendMessage(message);
 
     setMessage("");
+
+    socket.emit(
+      "stop_typing",
+      groupId
+    );
 
   };
 
@@ -22,7 +68,7 @@ function MessageInput({ sendMessage }) {
         type="text"
         placeholder="Type message..."
         value={message}
-        onChange={(e) => setMessage(e.target.value)}
+        onChange={handleChange}
       />
 
       <button onClick={handleSend}>
@@ -30,6 +76,7 @@ function MessageInput({ sendMessage }) {
       </button>
 
     </div>
+
   );
 }
 
