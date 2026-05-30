@@ -21,7 +21,7 @@ function MessageInput({
     setMessage(value);
 
     console.log("TYPING EMITTED");
-    
+
     socket.emit(
       "typing",
       {
@@ -60,6 +60,16 @@ function MessageInput({
 
   };
 
+  const handleKeyDown = (e) => {
+
+  if (e.key === "Enter") {
+
+    handleSend();
+
+  }
+
+};
+
   return (
 
     <div>
@@ -69,6 +79,7 @@ function MessageInput({
         placeholder="Type message..."
         value={message}
         onChange={handleChange}
+        onKeyDown={handleKeyDown}
       />
 
       <button onClick={handleSend}>
