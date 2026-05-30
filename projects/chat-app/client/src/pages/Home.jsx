@@ -1,4 +1,3 @@
-import { io } from "socket.io-client";
 
 import { useContext,useEffect,useState } from "react";
 
@@ -12,13 +11,14 @@ import ChatBox from "../components/ChatBox";
 
 import MessageInput from "../components/MessageInput";
 
- const socket = io("http://localhost:5000");
-
+import { SocketContext } from "../context/SocketContext";
 
 function Home() {
- const { user } = useContext(AuthContext);
+  const { socket } = useContext(SocketContext);
 
- const [groups, setGroups] = useState([]);
+  const { user } = useContext(AuthContext);
+
+  const [groups, setGroups] = useState([]);
 
   const [groupName, setGroupName] = useState("");
 
@@ -142,8 +142,8 @@ const addMember = async () => {
       );
     
        socket.emit(
-        "sendMessage",
-         res.data
+       "send_message",
+        res.data
         );
 
     } catch (error) {
@@ -160,9 +160,9 @@ useEffect(() => {
 
   if (!selectedGroup) return;
 
-  socket.emit(
-    "joinGroup",
-    selectedGroup._id
+    socket.emit(
+     "join_group",
+     selectedGroup._id
   );
 
   const loadMessages = async () => {
@@ -193,7 +193,7 @@ useEffect(() => {
 
   loadMessages();
 
-}, [selectedGroup, user]);
+}, [selectedGroup, user, socket]);
 
 
 
@@ -202,9 +202,11 @@ useEffect(() => {
 
   socket.on(
 
-    "receiveMessage",
+    "receive_message",
 
     (message) => {
+
+         console.log("RECEIVED MESSAGE:", message);
 
       setMessages((prev) => [
 
@@ -219,11 +221,11 @@ useEffect(() => {
 
   return () => {
 
-    socket.off("receiveMessage");
+    socket.off("receive_message");
 
   };
 
-}, []);
+}, [socket]);
 
 
  return (

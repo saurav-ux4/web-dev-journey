@@ -1,3 +1,4 @@
+import socketHandler from "./socket/socketHandler.js";
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
@@ -47,40 +48,7 @@ app.use("/api/groups", groupRoutes);
 
 
 // SOCKET.IO
-io.on("connection", (socket) => {
-
-  console.log("User Connected:", socket.id);
-
-
-   // JOIN GROUP ROOM
-  socket.on("joinGroup", (groupId) => {
-
-    socket.join(groupId);
-
-    console.log(`Joined Group: ${groupId}`);
-
-  });
-
-
-  // SEND MESSAGE
-  socket.on("sendMessage", (message) => {
-
-    io.to(message.group._id).emit(
-      "receiveMessage",
-      message
-    );
-
-  });
-
-  socket.on("disconnect", () => {
-
-    console.log("User Disconnected");
-
-  });
-
-});
-
-
+socketHandler(io); //-----newly added , maybe wrong!!!!
 
 const PORT = process.env.PORT || 5000;
 

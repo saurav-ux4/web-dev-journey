@@ -52,10 +52,15 @@ client/src/App.jsx
 client/src/assets/hero.png
 client/src/assets/react.svg
 client/src/assets/vite.svg
+client/src/components/Chatbox.jsx
+client/src/components/MessageInput.jsx
 client/src/components/Navbar.jsx
 client/src/components/ProtectedRoute.jsx
+client/src/components/Sidebar.jsx
 client/src/context/AuthContext.jsx
 client/src/context/AuthProvider.jsx
+client/src/context/SocketContext.jsx
+client/src/context/SocketProvider.jsx
 client/src/index.css
 client/src/main.jsx
 client/src/pages/Home.jsx
@@ -68,13 +73,17 @@ server/.env
 server/config/db.js
 server/controllers/authController.js
 server/controllers/groupController.js
+server/controllers/messageController.js
 server/middleware/authMiddleware.js
 server/models/Group.js
+server/models/Message.js
 server/models/user.js
 server/package.json
 server/routes/authRoutes.js
 server/routes/groupRoutes.js
+server/routes/messageRoutes.js
 server/server.js
+server/socket/socketHandler.js
 server/utils/generateToken.js
 </directory_structure>
 
@@ -164,7 +173,8 @@ export default defineConfig([
     "axios": "^1.16.1",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
-    "react-router-dom": "^7.15.1"
+    "react-router-dom": "^7.15.1",
+    "socket.io-client": "^4.8.3"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -464,6 +474,101 @@ export default App;
 <svg xmlns="http://www.w3.org/2000/svg" width="77" height="47" fill="none" aria-labelledby="vite-logo-title" viewBox="0 0 77 47"><title id="vite-logo-title">Vite</title><style>.parenthesis{fill:#000}@media (prefers-color-scheme:dark){.parenthesis{fill:#fff}}</style><path fill="#9135ff" d="M40.151 45.71c-.663.844-2.02.374-2.02-.699V34.708a2.26 2.26 0 0 0-2.262-2.262H24.493c-.92 0-1.457-1.04-.92-1.788l7.479-10.471c1.07-1.498 0-3.578-1.842-3.578H15.443c-.92 0-1.456-1.04-.92-1.788l9.696-13.576c.213-.297.556-.474.92-.474h28.894c.92 0 1.456 1.04.92 1.788l-7.48 10.472c-1.07 1.497 0 3.578 1.842 3.578h11.376c.944 0 1.474 1.087.89 1.83L40.153 45.712z"/><mask id="a" width="48" height="47" x="14" y="0" maskUnits="userSpaceOnUse" style="mask-type:alpha"><path fill="#000" d="M40.047 45.71c-.663.843-2.02.374-2.02-.699V34.708a2.26 2.26 0 0 0-2.262-2.262H24.389c-.92 0-1.457-1.04-.92-1.788l7.479-10.472c1.07-1.497 0-3.578-1.842-3.578H15.34c-.92 0-1.456-1.04-.92-1.788l9.696-13.575c.213-.297.556-.474.92-.474H53.93c.92 0 1.456 1.04.92 1.788L47.37 13.03c-1.07 1.498 0 3.578 1.842 3.578h11.376c.944 0 1.474 1.088.89 1.831L40.049 45.712z"/></mask><g mask="url(#a)"><g filter="url(#b)"><ellipse cx="5.508" cy="14.704" fill="#eee6ff" rx="5.508" ry="14.704" transform="rotate(269.814 20.96 11.29)scale(-1 1)"/></g><g filter="url(#c)"><ellipse cx="10.399" cy="29.851" fill="#eee6ff" rx="10.399" ry="29.851" transform="rotate(89.814 -16.902 -8.275)scale(1 -1)"/></g><g filter="url(#d)"><ellipse cx="5.508" cy="30.487" fill="#8900ff" rx="5.508" ry="30.487" transform="rotate(89.814 -19.197 -7.127)scale(1 -1)"/></g><g filter="url(#e)"><ellipse cx="5.508" cy="30.599" fill="#8900ff" rx="5.508" ry="30.599" transform="rotate(89.814 -25.928 4.177)scale(1 -1)"/></g><g filter="url(#f)"><ellipse cx="5.508" cy="30.599" fill="#8900ff" rx="5.508" ry="30.599" transform="rotate(89.814 -25.738 5.52)scale(1 -1)"/></g><g filter="url(#g)"><ellipse cx="14.072" cy="22.078" fill="#eee6ff" rx="14.072" ry="22.078" transform="rotate(93.35 31.245 55.578)scale(-1 1)"/></g><g filter="url(#h)"><ellipse cx="3.47" cy="21.501" fill="#8900ff" rx="3.47" ry="21.501" transform="rotate(89.009 35.419 55.202)scale(-1 1)"/></g><g filter="url(#i)"><ellipse cx="3.47" cy="21.501" fill="#8900ff" rx="3.47" ry="21.501" transform="rotate(89.009 35.419 55.202)scale(-1 1)"/></g><g filter="url(#j)"><ellipse cx="14.592" cy="9.743" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(39.51 14.592 9.743)"/></g><g filter="url(#k)"><ellipse cx="61.728" cy="-5.321" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 61.728 -5.32)"/></g><g filter="url(#l)"><ellipse cx="55.618" cy="7.104" fill="#00c2ff" rx="5.971" ry="9.665" transform="rotate(37.892 55.618 7.104)"/></g><g filter="url(#m)"><ellipse cx="12.326" cy="39.103" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 12.326 39.103)"/></g><g filter="url(#n)"><ellipse cx="12.326" cy="39.103" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 12.326 39.103)"/></g><g filter="url(#o)"><ellipse cx="49.857" cy="30.678" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 49.857 30.678)"/></g><g filter="url(#p)"><ellipse cx="52.623" cy="33.171" fill="#00c2ff" rx="5.971" ry="15.297" transform="rotate(37.892 52.623 33.17)"/></g></g><path d="M6.919 0c-9.198 13.166-9.252 33.575 0 46.789h6.215c-9.25-13.214-9.196-33.623 0-46.789zm62.424 0h-6.215c9.198 13.166 9.252 33.575 0 46.789h6.215c9.25-13.214 9.196-33.623 0-46.789" class="parenthesis"/><defs><filter id="b" width="60.045" height="41.654" x="-5.564" y="16.92" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="7.659"/></filter><filter id="c" width="90.34" height="51.437" x="-40.407" y="-6.762" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="7.659"/></filter><filter id="d" width="79.355" height="29.4" x="-35.435" y="2.801" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="e" width="79.579" height="29.4" x="-30.84" y="20.8" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="f" width="79.579" height="29.4" x="-29.307" y="21.949" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="g" width="74.749" height="58.852" x="29.961" y="-17.13" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="7.659"/></filter><filter id="h" width="61.377" height="25.362" x="37.754" y="3.055" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="i" width="61.377" height="25.362" x="37.754" y="3.055" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="j" width="56.045" height="63.649" x="-13.43" y="-22.082" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="k" width="54.814" height="64.646" x="34.321" y="-37.644" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="l" width="33.541" height="35.313" x="38.847" y="-10.552" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="m" width="54.814" height="64.646" x="-15.081" y="6.78" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="n" width="54.814" height="64.646" x="-15.081" y="6.78" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="o" width="54.814" height="64.646" x="22.45" y="-1.645" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="p" width="39.409" height="43.623" x="32.919" y="11.36" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter></defs></svg>
 </file>
 
+<file path="client/src/components/Chatbox.jsx">
+function ChatBox({ messages, user }) {
+
+  return (
+
+    <div
+      style={{
+        flex: 1,
+        padding: "10px"
+      }}
+    >
+
+      <h2>Messages</h2>
+
+      {
+
+        messages.map((msg) => (
+
+          <div
+            key={msg._id}
+            style={{
+              marginBottom: "10px"
+            }}
+          >
+
+            <strong>
+
+              {
+
+                msg.sender._id === user._id
+                  ? "You"
+                  : msg.sender.name
+
+              }
+
+              :
+
+            </strong>
+
+            {" "}
+
+            {msg.content}
+
+          </div>
+
+        ))
+
+      }
+
+    </div>
+  );
+}
+
+export default ChatBox;
+</file>
+
+<file path="client/src/components/MessageInput.jsx">
+import { useState } from "react";
+
+function MessageInput({ sendMessage }) {
+
+  const [message, setMessage] = useState("");
+
+  const handleSend = () => {
+
+    if (!message.trim()) return;
+
+    sendMessage(message);
+
+    setMessage("");
+
+  };
+
+  return (
+
+    <div>
+
+      <input
+        type="text"
+        placeholder="Type message..."
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+      />
+
+      <button onClick={handleSend}>
+        Send
+      </button>
+
+    </div>
+  );
+}
+
+export default MessageInput;
+</file>
+
 <file path="client/src/components/Navbar.jsx">
 import { useContext } from "react";
 
@@ -558,6 +663,65 @@ function ProtectedRoute({ children }) {
 export default ProtectedRoute;
 </file>
 
+<file path="client/src/components/Sidebar.jsx">
+function Sidebar({
+
+  groups,
+
+  selectedGroup,
+
+  setSelectedGroup
+
+}) {
+
+  return (
+
+    <div
+      style={{
+        width: "30%",
+        borderRight: "1px solid gray",
+        padding: "10px"
+      }}
+    >
+
+      <h2>Groups</h2>
+
+      {
+
+        groups.map((group) => (
+
+          <div
+
+            key={group._id}
+
+            onClick={() => setSelectedGroup(group)}
+
+            style={{
+              padding: "10px",
+              marginBottom: "5px",
+              cursor: "pointer",
+              background:
+                selectedGroup?._id === group._id
+                  ? "#ddd"
+                  : "transparent"
+            }}
+          >
+
+            {group.name}
+
+          </div>
+
+        ))
+
+      }
+
+    </div>
+  );
+}
+
+export default Sidebar;
+</file>
+
 <file path="client/src/context/AuthContext.jsx">
 import { createContext } from "react";
 
@@ -599,6 +763,72 @@ function AuthProvider({ children }) {
 export default AuthProvider;
 </file>
 
+<file path="client/src/context/SocketContext.jsx">
+import { createContext } from "react";
+
+
+export const SocketContext = createContext();
+</file>
+
+<file path="client/src/context/SocketProvider.jsx">
+import { useEffect, useState } from "react";
+import { io } from "socket.io-client";
+
+import { SocketContext } from "./SocketContext";
+
+const socket = io("http://localhost:5000");
+
+const SocketProvider = ({ children, user }) => {
+  const [onlineUsers, setOnlineUsers] = useState([]);
+  const [typingUser, setTypingUser] = useState("");
+
+  useEffect(() => {
+    if (user) {
+      socket.emit("user_online", user._id);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    socket.on("online_users", (users) => {
+      setOnlineUsers(users);
+    });
+
+    return () => {
+      socket.off("online_users");
+    };
+  }, []);
+
+  useEffect(() => {
+    socket.on("user_typing", (userName) => {
+      setTypingUser(userName);
+    });
+
+    socket.on("user_stop_typing", () => {
+      setTypingUser("");
+    });
+
+    return () => {
+      socket.off("user_typing");
+      socket.off("user_stop_typing");
+    };
+  }, []);
+
+  return (
+    <SocketContext.Provider
+      value={{
+        socket,
+        onlineUsers,
+        typingUser,
+      }}
+    >
+      {children}
+    </SocketContext.Provider>
+  );
+};
+
+export default SocketProvider;
+</file>
+
 <file path="client/src/index.css">
 
 </file>
@@ -627,11 +857,22 @@ ReactDOM.createRoot(document.getElementById("root")).render(
 </file>
 
 <file path="client/src/pages/Home.jsx">
+import { io } from "socket.io-client";
+
 import { useContext,useEffect,useState } from "react";
 
 import { AuthContext } from "../context/AuthContext";
 
 import API from "../services/api";
+
+import Sidebar from "../components/Sidebar";
+
+import ChatBox from "../components/ChatBox";
+
+import MessageInput from "../components/MessageInput";
+
+ const socket = io("http://localhost:5000");
+
 
 function Home() {
  const { user } = useContext(AuthContext);
@@ -640,30 +881,31 @@ function Home() {
 
   const [groupName, setGroupName] = useState("");
 
+  const [memberEmail, setMemberEmail] = useState("");
 
-  // FETCH GROUPS
-  const fetchGroups = async () => {
+  const [messages, setMessages] = useState([]);
 
+  const [selectedGroup, setSelectedGroup] = useState(null);
+
+ 
+
+  // LOAD GROUPS
+  useEffect(() => {
+  const loadGroups = async () => {
     try {
-
       const res = await API.get("/groups", {
-
         headers: {
           Authorization: `Bearer ${user.token}`
         }
-
       });
-
       setGroups(res.data);
-
     } catch (error) {
-
       console.log(error);
-
     }
-
   };
 
+  loadGroups();
+}, [user]);
 
   // CREATE GROUP
   const createGroup = async () => {
@@ -699,54 +941,267 @@ function Home() {
   };
 
 
-   useEffect(() => {
+  // ADD MEMBER
+const addMember = async () => {
 
-    fetchGroups();
+  try {
 
-  }, [user]);
+    await API.put(
 
+      "/groups/add-member",
+
+      {
+        groupId: selectedGroup._id,
+        email: memberEmail
+      },
+
+      {
+        headers: {
+          Authorization: `Bearer ${user.token}`
+        }
+      }
+
+    );
+
+    alert("Member Added");
+
+    setMemberEmail("");
+
+  } catch (error) {
+
+    console.log(error);
+
+    alert(error.response.data.message);
+
+  }
+
+};
+
+
+  // SEND MESSAGE
+  const sendMessage = async (content) => {
+
+    try {
+
+      const res = await API.post(
+
+        "/messages",
+
+        {
+          groupId: selectedGroup._id,
+          content
+        },
+
+        {
+          headers: {
+            Authorization: `Bearer ${user.token}`
+          }
+        }
+
+      );
+    
+       socket.emit(
+        "sendMessage",
+         res.data
+        );
+
+    } catch (error) {
+
+      console.log(error);
+
+    }
+
+  };
+
+
+
+useEffect(() => {
+
+  if (!selectedGroup) return;
+
+  socket.emit(
+    "joinGroup",
+    selectedGroup._id
+  );
+
+  const loadMessages = async () => {
+
+    try {
+
+      const res = await API.get(
+
+        `/messages/${selectedGroup._id}`,
+
+        {
+          headers: {
+            Authorization: `Bearer ${user.token}`
+          }
+        }
+
+      );
+
+      setMessages(res.data);
+
+    } catch (error) {
+
+      console.log(error);
+
+    }
+
+  };
+
+  loadMessages();
+
+}, [selectedGroup, user]);
+
+
+
+
+useEffect(() => {
+
+  socket.on(
+
+    "receiveMessage",
+
+    (message) => {
+
+      setMessages((prev) => [
+
+        ...prev,
+        message
+
+      ]);
+
+    }
+
+  );
+
+  return () => {
+
+    socket.off("receiveMessage");
+
+  };
+
+}, []);
 
 
  return (
 
-    <div>
+    <div 
+        style={{
+        display: "flex",
+        height: "100vh"
+      }}
+    >
 
-      <h1>welcome {user.name}</h1>
 
-      <br />
-       
-       <input
-        type="text"
-        placeholder="Group Name"
-        value={groupName}
-        onChange={(e) => setGroupName(e.target.value)}
+    <Sidebar
+        groups={groups}
+        selectedGroup={selectedGroup}
+        setSelectedGroup={setSelectedGroup}
       />
 
-     <button onClick={createGroup}>
-        Create Group
-      </button>
 
-       <hr />
+       <div
+        style={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column"
+        }}
+      >
 
-      <h2>Your Groups</h2>
- 
-  {
 
-        groups.map((group) => (
+         <div
+          style={{
+            padding: "10px",
+            borderBottom: "1px solid gray"
+          }}
+        >
 
-          <div key={group._id}>
-
-            <h3>
-              {group.name}
-            </h3>
+             <h2>
+            {selectedGroup
+              ? selectedGroup.name
+              : "Select Group"}
+          </h2>
 
           </div>
 
-        ))
 
-      }
+          <ChatBox 
+          messages={messages}
+          user={user}
+          />
+
+
+
+            {
+
+          selectedGroup && (
+
+            <MessageInput
+              sendMessage={sendMessage}
+            />
+
+          )
+
+        }
+
+
+        {
+
+  selectedGroup && (
+
+    <div
+      style={{
+        padding: "10px"
+      }}
+    >
+
+      <input
+        type="email"
+        placeholder="Add member by email"
+        value={memberEmail}
+        onChange={(e) =>
+          setMemberEmail(e.target.value)
+        }
+      />
+
+      <button onClick={addMember}>
+        Add Member
+      </button>
 
     </div>
+
+  )
+
+}
+
+        <div
+          style={{
+            padding: "10px"
+          }}
+        >
+
+          <input
+            type="text"
+            placeholder="New Group"
+            value={groupName}
+            onChange={(e) =>
+              setGroupName(e.target.value)
+            }
+          />
+
+           <button onClick={createGroup}>
+            Create Group
+          </button>
+
+          </div>
+          
+        </div>
+
+      </div>
+
+    
   );
 }
 
@@ -1096,6 +1551,7 @@ export const loginUser = async (req, res) => {
 
 <file path="server/controllers/groupController.js">
 import Group from "../models/Group.js";
+import User from "../models/User.js";
 
 
 // CREATE GROUP
@@ -1138,6 +1594,142 @@ export const getGroups = async (req, res) => {
     });
 
     res.json(groups);
+
+  } catch (error) {
+
+    res.status(500).json({
+      message: error.message
+    });
+
+  }
+
+};
+
+// ADD MEMBER TO GROUP
+export const addMember = async (req, res) => {
+
+  try {
+
+    const { groupId, email } = req.body;
+
+    // FIND USER
+    const userToAdd = await User.findOne({ email });
+
+    if (!userToAdd) {
+
+      return res.status(404).json({
+        message: "User not found"
+      });
+
+    }
+
+    // FIND GROUP
+    const group = await Group.findById(groupId);
+
+    if (!group) {
+
+      return res.status(404).json({
+        message: "Group not found"
+      });
+
+    }
+
+    // ONLY ADMIN CAN ADD
+    if (group.admin.toString() !== req.user._id.toString()) {
+
+      return res.status(401).json({
+        message: "Only admin can add members"
+      });
+
+    }
+
+    // CHECK IF ALREADY MEMBER
+    const alreadyMember = group.members.includes(
+      userToAdd._id
+    );
+
+    if (alreadyMember) {
+
+      return res.status(400).json({
+        message: "User already in group"
+      });
+
+    }
+
+    // ADD USER
+    group.members.push(userToAdd._id);
+
+    await group.save();
+
+    res.json({
+      message: "Member added successfully"
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      message: error.message
+    });
+
+  }
+
+};
+</file>
+
+<file path="server/controllers/messageController.js">
+import Message from "../models/Message.js";
+
+
+// SEND MESSAGE
+export const sendMessage = async (req, res) => {
+
+  try {
+
+    const { groupId, content } = req.body;
+
+    const message = await Message.create({
+
+      sender: req.user._id,
+
+      group: groupId,
+
+      content
+
+    });
+
+    const populatedMessage = await Message.findById(message._id)
+
+      .populate("sender", "name email")
+
+      .populate("group");
+
+    res.status(201).json(populatedMessage);
+
+  } catch (error) {
+
+    res.status(500).json({
+      message: error.message
+    });
+
+  }
+
+};
+
+
+// GET GROUP MESSAGES
+export const getMessages = async (req, res) => {
+
+  try {
+
+    const messages = await Message.find({
+      group: req.params.groupId
+    })
+
+      .populate("sender", "name email")
+
+      .sort({ createdAt: 1 });
+
+    res.json(messages);
 
   } catch (error) {
 
@@ -1232,6 +1824,41 @@ const Group = mongoose.model("Group", groupSchema);
 export default Group;
 </file>
 
+<file path="server/models/Message.js">
+import mongoose from "mongoose";
+
+const messageSchema = mongoose.Schema(
+
+  {
+
+    sender: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User"
+    },
+
+    group: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Group"
+    },
+
+    content: {
+      type: String,
+      required: true
+    }
+
+  },
+
+  {
+    timestamps: true
+  }
+
+);
+
+const Message = mongoose.model("Message", messageSchema);
+
+export default Message;
+</file>
+
 <file path="server/models/user.js">
 import mongoose from "mongoose";
 
@@ -1289,7 +1916,8 @@ export default User;
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
-    "mongoose": "^9.6.3"
+    "mongoose": "^9.6.3",
+    "socket.io": "^4.8.3"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"
@@ -1326,7 +1954,8 @@ import protect from "../middleware/authMiddleware.js";
 
 import {
   createGroup,
-  getGroups
+  getGroups,
+  addMember
 } from "../controllers/groupController.js";
 
 const router = express.Router();
@@ -1335,6 +1964,27 @@ router.post("/", protect, createGroup);
 
 router.get("/", protect, getGroups);
 
+router.put("/add-member", protect, addMember);
+
+export default router;
+</file>
+
+<file path="server/routes/messageRoutes.js">
+import express from "express";
+
+import protect from "../middleware/authMiddleware.js";
+
+import {
+  sendMessage,
+  getMessages
+} from "../controllers/messageController.js";
+
+const router = express.Router();
+
+router.post("/", protect, sendMessage);
+
+router.get("/:groupId", protect, getMessages);
+
 export default router;
 </file>
 
@@ -1342,9 +1992,12 @@ export default router;
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import http from "http";
+import { Server } from "socket.io";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import groupRoutes from "./routes/groupRoutes.js";
+import messageRoutes from "./routes/messageRoutes.js";
 
 
 dotenv.config();
@@ -1353,33 +2006,184 @@ connectDB();
 
 const app = express();
 
+const server = http.createServer(app);
+
+const io = new Server(server, {
+
+  cors: {
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST"]
+  }
+
+});
+
 //middleware
 
-app.use(cors());
+app.use(cors({
+    origin: "http://localhost:5173"
+})
+
+);
+
 app.use(express.json());
-
-////
-app.use("/api/groups", groupRoutes);
-app.use("/api/auth", authRoutes);
-app.use("/api/groups", groupRoutes);
-
 
 app.get("/", (req, res) => {
   res.send("API running..." + "<h6>hello</h6>");
  
 });
 
-
+app.use("/api/messages", messageRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/groups", groupRoutes);
+
+
+// SOCKET.IO
+io.on("connection", (socket) => {
+
+  console.log("User Connected:", socket.id);
+
+
+   // JOIN GROUP ROOM
+  socket.on("joinGroup", (groupId) => {
+
+    socket.join(groupId);
+
+    console.log(`Joined Group: ${groupId}`);
+
+  });
+
+
+  // SEND MESSAGE
+  socket.on("sendMessage", (message) => {
+
+    io.to(message.group._id).emit(
+      "receiveMessage",
+      message
+    );
+
+  });
+
+  socket.on("disconnect", () => {
+
+    console.log("User Disconnected");
+
+  });
+
+});
+
 
 
 const PORT = process.env.PORT || 5000;
 
 
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+</file>
+
+<file path="server/socket/socketHandler.js">
+const onlineUsers = new Map();
+
+const socketHandler = (io) => {
+
+    io.on("connection", (socket) => {
+
+        console.log("User connected:", socket.id);
+
+        // ==============================
+        // USER ONLINE
+        // ==============================
+
+        socket.on("user_online", (userId) => {
+
+            onlineUsers.set(userId, socket.id);
+
+            socket.userId = userId;
+
+            io.emit(
+                "online_users",
+                Array.from(onlineUsers.keys())
+            );
+
+        });
+
+        // ==============================
+        // JOIN GROUP
+        // ==============================
+
+        socket.on("join_group", (groupId) => {
+
+            socket.join(groupId);
+
+            console.log(`Socket joined group: ${groupId}`);
+
+        });
+
+        // ==============================
+        // SEND MESSAGE
+        // ==============================
+
+        socket.on("send_message", (messageData) => {
+
+            io.to(messageData.group).emit(
+                "receive_message",
+                messageData
+            );
+
+        });
+
+        // ==============================
+        // TYPING
+        // ==============================
+
+        socket.on("typing", ({ groupId, userName }) => {
+
+            socket.to(groupId).emit(
+                "user_typing",
+                userName
+            );
+
+        });
+
+        // ==============================
+        // STOP TYPING
+        // ==============================
+
+        socket.on("stop_typing", (groupId) => {
+
+            socket.to(groupId).emit(
+                "user_stop_typing"
+            );
+
+        });
+
+        // ==============================
+        // DISCONNECT
+        // ==============================
+
+        socket.on("disconnect", () => {
+
+            console.log("User disconnected:", socket.id);
+
+            if (socket.userId) {
+
+                onlineUsers.delete(socket.userId);
+
+                io.emit(
+                    "online_users",
+                    Array.from(onlineUsers.keys())
+                );
+
+            }
+
+        });
+
+    });
+
+};
+
+module.exports = socketHandler;
 </file>
 
 <file path="server/utils/generateToken.js">
