@@ -52,12 +52,11 @@ client/src/App.jsx
 client/src/assets/hero.png
 client/src/assets/react.svg
 client/src/assets/vite.svg
-client/src/components/ChatBox.jsx
+client/src/components/Chatbox.jsx
 client/src/components/MessageInput.jsx
-client/src/components/Navbar.jsx
 client/src/components/ProtectedRoute.jsx
 client/src/components/Sidebar.jsx
-client/src/context/AuthContext.jsx
+client/src/context/authContext.jsx
 client/src/context/AuthProvider.jsx
 client/src/context/SocketContext.jsx
 client/src/context/SocketProvider.jsx
@@ -148,6 +147,7 @@ export default defineConfig([
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./src/index.css">
     <title>client</title>
   </head>
   <body>
@@ -428,37 +428,42 @@ If you are developing a production application, we recommend using TypeScript wi
 </file>
 
 <file path="client/src/App.jsx">
+import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Home from "./pages/Home";
-
 import Navbar from "./components/Navbar";
 
 function App() {
+  const [darkMode, setDarkMode] = useState(
+    () => localStorage.getItem("theme") === "dark"
+  );
+
+  useEffect(() => {
+    document.documentElement.setAttribute(
+      "data-theme",
+      darkMode ? "dark" : "light"
+    );
+    localStorage.setItem("theme", darkMode ? "dark" : "light");
+  }, [darkMode]);
+
   return (
-     <BrowserRouter>
- 
-       <Navbar />
-
+    <BrowserRouter>
+      <Navbar darkMode={darkMode} setDarkMode={setDarkMode} />
       <Routes>
-
         <Route
-            path="/"
-            element={
-          <ProtectedRoute>
-             <Home />
-          </ProtectedRoute>
-     }
-   />
-
+          path="/"
+          element={
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/login" element={<Login />} />
-
         <Route path="/register" element={<Register />} />
-
       </Routes>
-
     </BrowserRouter>
   );
 }
@@ -474,130 +479,148 @@ export default App;
 <svg xmlns="http://www.w3.org/2000/svg" width="77" height="47" fill="none" aria-labelledby="vite-logo-title" viewBox="0 0 77 47"><title id="vite-logo-title">Vite</title><style>.parenthesis{fill:#000}@media (prefers-color-scheme:dark){.parenthesis{fill:#fff}}</style><path fill="#9135ff" d="M40.151 45.71c-.663.844-2.02.374-2.02-.699V34.708a2.26 2.26 0 0 0-2.262-2.262H24.493c-.92 0-1.457-1.04-.92-1.788l7.479-10.471c1.07-1.498 0-3.578-1.842-3.578H15.443c-.92 0-1.456-1.04-.92-1.788l9.696-13.576c.213-.297.556-.474.92-.474h28.894c.92 0 1.456 1.04.92 1.788l-7.48 10.472c-1.07 1.497 0 3.578 1.842 3.578h11.376c.944 0 1.474 1.087.89 1.83L40.153 45.712z"/><mask id="a" width="48" height="47" x="14" y="0" maskUnits="userSpaceOnUse" style="mask-type:alpha"><path fill="#000" d="M40.047 45.71c-.663.843-2.02.374-2.02-.699V34.708a2.26 2.26 0 0 0-2.262-2.262H24.389c-.92 0-1.457-1.04-.92-1.788l7.479-10.472c1.07-1.497 0-3.578-1.842-3.578H15.34c-.92 0-1.456-1.04-.92-1.788l9.696-13.575c.213-.297.556-.474.92-.474H53.93c.92 0 1.456 1.04.92 1.788L47.37 13.03c-1.07 1.498 0 3.578 1.842 3.578h11.376c.944 0 1.474 1.088.89 1.831L40.049 45.712z"/></mask><g mask="url(#a)"><g filter="url(#b)"><ellipse cx="5.508" cy="14.704" fill="#eee6ff" rx="5.508" ry="14.704" transform="rotate(269.814 20.96 11.29)scale(-1 1)"/></g><g filter="url(#c)"><ellipse cx="10.399" cy="29.851" fill="#eee6ff" rx="10.399" ry="29.851" transform="rotate(89.814 -16.902 -8.275)scale(1 -1)"/></g><g filter="url(#d)"><ellipse cx="5.508" cy="30.487" fill="#8900ff" rx="5.508" ry="30.487" transform="rotate(89.814 -19.197 -7.127)scale(1 -1)"/></g><g filter="url(#e)"><ellipse cx="5.508" cy="30.599" fill="#8900ff" rx="5.508" ry="30.599" transform="rotate(89.814 -25.928 4.177)scale(1 -1)"/></g><g filter="url(#f)"><ellipse cx="5.508" cy="30.599" fill="#8900ff" rx="5.508" ry="30.599" transform="rotate(89.814 -25.738 5.52)scale(1 -1)"/></g><g filter="url(#g)"><ellipse cx="14.072" cy="22.078" fill="#eee6ff" rx="14.072" ry="22.078" transform="rotate(93.35 31.245 55.578)scale(-1 1)"/></g><g filter="url(#h)"><ellipse cx="3.47" cy="21.501" fill="#8900ff" rx="3.47" ry="21.501" transform="rotate(89.009 35.419 55.202)scale(-1 1)"/></g><g filter="url(#i)"><ellipse cx="3.47" cy="21.501" fill="#8900ff" rx="3.47" ry="21.501" transform="rotate(89.009 35.419 55.202)scale(-1 1)"/></g><g filter="url(#j)"><ellipse cx="14.592" cy="9.743" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(39.51 14.592 9.743)"/></g><g filter="url(#k)"><ellipse cx="61.728" cy="-5.321" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 61.728 -5.32)"/></g><g filter="url(#l)"><ellipse cx="55.618" cy="7.104" fill="#00c2ff" rx="5.971" ry="9.665" transform="rotate(37.892 55.618 7.104)"/></g><g filter="url(#m)"><ellipse cx="12.326" cy="39.103" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 12.326 39.103)"/></g><g filter="url(#n)"><ellipse cx="12.326" cy="39.103" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 12.326 39.103)"/></g><g filter="url(#o)"><ellipse cx="49.857" cy="30.678" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 49.857 30.678)"/></g><g filter="url(#p)"><ellipse cx="52.623" cy="33.171" fill="#00c2ff" rx="5.971" ry="15.297" transform="rotate(37.892 52.623 33.17)"/></g></g><path d="M6.919 0c-9.198 13.166-9.252 33.575 0 46.789h6.215c-9.25-13.214-9.196-33.623 0-46.789zm62.424 0h-6.215c9.198 13.166 9.252 33.575 0 46.789h6.215c9.25-13.214 9.196-33.623 0-46.789" class="parenthesis"/><defs><filter id="b" width="60.045" height="41.654" x="-5.564" y="16.92" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="7.659"/></filter><filter id="c" width="90.34" height="51.437" x="-40.407" y="-6.762" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="7.659"/></filter><filter id="d" width="79.355" height="29.4" x="-35.435" y="2.801" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="e" width="79.579" height="29.4" x="-30.84" y="20.8" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="f" width="79.579" height="29.4" x="-29.307" y="21.949" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="g" width="74.749" height="58.852" x="29.961" y="-17.13" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="7.659"/></filter><filter id="h" width="61.377" height="25.362" x="37.754" y="3.055" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="i" width="61.377" height="25.362" x="37.754" y="3.055" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="j" width="56.045" height="63.649" x="-13.43" y="-22.082" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="k" width="54.814" height="64.646" x="34.321" y="-37.644" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="l" width="33.541" height="35.313" x="38.847" y="-10.552" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="m" width="54.814" height="64.646" x="-15.081" y="6.78" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="n" width="54.814" height="64.646" x="-15.081" y="6.78" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="o" width="54.814" height="64.646" x="22.45" y="-1.645" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="p" width="39.409" height="43.623" x="32.919" y="11.36" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter></defs></svg>
 </file>
 
-<file path="client/src/components/ChatBox.jsx">
-import { useContext,useEffect,useRef } from "react";
+<file path="client/src/components/Chatbox.jsx">
+import { useContext, useEffect, useRef } from "react";
 import { SocketContext } from "../context/SocketContext";
 
 function ChatBox({ messages, user }) {
-
   const { typingUser } = useContext(SocketContext);
   const bottomRef = useRef(null);
 
-
   useEffect(() => {
-
-  bottomRef.current?.scrollIntoView({
-    behavior: "smooth"
-  });
-
-}, [messages]);
-
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   return (
-
     <div
       style={{
         flex: 1,
-        padding: "10px",
-        overflowY:"auto"
-        
+        overflowY: "auto",
+        padding: "20px 16px",
+        display: "flex",
+        flexDirection: "column",
+        gap: "4px",
+        backgroundColor: "#f9f9f9",
       }}
     >
+      {messages.map((msg, index) => {
+        const isMyMessage = msg.sender._id === user._id;
 
-     
+        // Show sender name only for received messages,
+        // and only when the previous message is from a different sender
+        const prevMsg = messages[index - 1];
+        const showSenderName =
+          !isMyMessage &&
+          (!prevMsg || prevMsg.sender._id !== msg.sender._id);
 
-     {
-    typingUser && (
-         <div
-                style={{
-                         marginBottom: "10px",
-                         fontStyle: "italic"
-                       }}
-                  >
-                    {typingUser} is typing...
-         </div>
-  )
-}
-
-      {
-  messages.map((msg) => {
-
-    const isMyMessage =
-      msg.sender._id === user._id;
-
-    return (
-
-      <div
-        key={msg._id}
-        style={{
-          display: "flex",
-          justifyContent: isMyMessage
-            ? "flex-end"
-            : "flex-start",
-          marginBottom: "10px"
-        }}
-      >
-
-        <div
-          style={{
-            maxWidth: "60%",
-            padding: "10px",
-            borderRadius: "10px",
-            backgroundColor: isMyMessage
-              ? "#DCF8C6"
-              : "#F1F0F0"
-          }}
-        >
-
-          <div>
-
-            <strong>
-              {
-                isMyMessage
-                  ? "You"
-                  : msg.sender.name
-              }
-            </strong>
-
-          </div>
-
+        return (
           <div
+            key={msg._id}
             style={{
-              marginTop: "5px",
-              marginBottom: "5px"
+              display: "flex",
+              flexDirection: "column",
+              alignItems: isMyMessage ? "flex-end" : "flex-start",
+              marginTop: showSenderName ? "12px" : "2px",
             }}
           >
-            {msg.content}
+            {/* Sender name label for received messages */}
+            {showSenderName && (
+              <span
+                style={{
+                  fontSize: "11px",
+                  fontWeight: "600",
+                  color: "#888",
+                  marginBottom: "4px",
+                  marginLeft: "4px",
+                  letterSpacing: "0.3px",
+                }}
+              >
+                {msg.sender.name}
+              </span>
+            )}
+
+            {/* Bubble */}
+            <div
+              style={{
+                maxWidth: "65%",
+                padding: "10px 14px",
+                borderRadius: isMyMessage
+                  ? "18px 18px 4px 18px"
+                  : "18px 18px 18px 4px",
+                backgroundColor: isMyMessage ? "#1a1a1a" : "#efefef",
+                color: isMyMessage ? "#ffffff" : "#1a1a1a",
+                fontSize: "14px",
+                lineHeight: "1.5",
+                wordBreak: "break-word",
+                boxShadow: isMyMessage
+                  ? "0 1px 4px rgba(0,0,0,0.18)"
+                  : "0 1px 3px rgba(0,0,0,0.08)",
+              }}
+            >
+              {msg.content}
+            </div>
+
+            {/* Timestamp */}
+            <span
+              style={{
+                fontSize: "10px",
+                color: "#aaa",
+                marginTop: "3px",
+                marginLeft: isMyMessage ? "0" : "4px",
+                marginRight: isMyMessage ? "4px" : "0",
+              }}
+            >
+              {new Date(msg.createdAt).toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+            </span>
           </div>
+        );
+      })}
 
-          <small>
-
-            {new Date(
-              msg.createdAt
-            ).toLocaleTimeString([], {
-              hour: "2-digit",
-              minute: "2-digit"
-            })}
-
-          </small>
-
+      {/* Typing indicator */}
+      {typingUser && (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "6px",
+            marginTop: "8px",
+            color: "#888",
+            fontSize: "12px",
+            fontStyle: "italic",
+          }}
+        >
+          <div style={{ display: "flex", gap: "3px", alignItems: "center" }}>
+            {[0, 1, 2].map((i) => (
+              <span
+                key={i}
+                style={{
+                  width: "6px",
+                  height: "6px",
+                  borderRadius: "50%",
+                  backgroundColor: "#aaa",
+                  display: "inline-block",
+                  animation: `typingBounce 1.2s ease-in-out ${i * 0.2}s infinite`,
+                }}
+              />
+            ))}
+          </div>
+          {typingUser} is typing
         </div>
+      )}
 
-      </div>
+      <style>{`
+        @keyframes typingBounce {
+          0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+          40% { transform: translateY(-5px); opacity: 1; }
+        }
+      `}</style>
 
-    );
-
-  })
-}
-
-     
-
-      <div ref={bottomRef}></div>
-
+      <div ref={bottomRef} />
     </div>
-
   );
-
 }
 
 export default ChatBox;
@@ -605,172 +628,107 @@ export default ChatBox;
 
 <file path="client/src/components/MessageInput.jsx">
 import { useState, useRef, useContext } from "react";
-
 import { SocketContext } from "../context/SocketContext";
 
-function MessageInput({
-  sendMessage,
-  groupId,
-  userName
-}) {
-
+function MessageInput({ sendMessage, groupId, userName }) {
   const { socket } = useContext(SocketContext);
-
   const [message, setMessage] = useState("");
-
   const typingTimeoutRef = useRef(null);
 
   const handleChange = (e) => {
-
-    const value = e.target.value;
-
-    setMessage(value);
-
-    console.log("TYPING EMITTED");
-
-    socket.emit(
-      "typing",
-      {
-        groupId,
-        userName
-      }
-    );
-
-    clearTimeout(
-      typingTimeoutRef.current
-    );
-
+    setMessage(e.target.value);
+    socket.emit("typing", { groupId, userName });
+    clearTimeout(typingTimeoutRef.current);
     typingTimeoutRef.current = setTimeout(() => {
-
-      socket.emit(
-        "stop_typing",
-        groupId
-      );
-
+      socket.emit("stop_typing", groupId);
     }, 1000);
-
   };
 
   const handleSend = () => {
-
     if (!message.trim()) return;
-
     sendMessage(message);
-
     setMessage("");
-
-    socket.emit(
-      "stop_typing",
-      groupId
-    );
-
+    socket.emit("stop_typing", groupId);
   };
 
   const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
 
-  if (e.key === "Enter") {
-
-    handleSend();
-
-  }
-
-};
+  const hasText = message.trim().length > 0;
 
   return (
+    <div style={{
+      padding: "10px 16px 14px",
+      background: "var(--bg-glass)",
+      backdropFilter: "var(--blur)",
+      WebkitBackdropFilter: "var(--blur)",
+      borderTop: "1px solid var(--border)",
+      display: "flex",
+      alignItems: "center",
+      gap: "10px"
+    }}>
+      <div style={{
+        flex: 1,
+        display: "flex",
+        alignItems: "center",
+        background: "var(--bg-input)",
+        borderRadius: "var(--radius-full)",
+        border: "1.5px solid var(--border)",
+        padding: "0 16px",
+        transition: "border-color 0.2s ease"
+      }}
+        onFocusCapture={e => e.currentTarget.style.borderColor = "var(--accent)"}
+        onBlurCapture={e => e.currentTarget.style.borderColor = "var(--border)"}
+      >
+        <input
+          type="text"
+          placeholder="Message…"
+          value={message}
+          onChange={handleChange}
+          onKeyDown={handleKeyDown}
+          style={{
+            flex: 1,
+            padding: "11px 0",
+            border: "none",
+            background: "transparent",
+            fontSize: "15px",
+            color: "var(--text-primary)",
+            outline: "none"
+          }}
+        />
+      </div>
 
-    <div>
-
-      <input
-        type="text"
-        placeholder="Type message..."
-        value={message}
-        onChange={handleChange}
-        onKeyDown={handleKeyDown}
-      />
-
-      <button onClick={handleSend}>
-        Send
+      <button
+        onClick={handleSend}
+        style={{
+          width: "40px",
+          height: "40px",
+          borderRadius: "50%",
+          border: "none",
+          background: hasText ? "var(--accent)" : "var(--bg-input)",
+          color: hasText ? "#fff" : "var(--text-tertiary)",
+          fontSize: "16px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: hasText ? "pointer" : "default",
+          transition: "all 0.2s cubic-bezier(0.34,1.56,0.64,1)",
+          transform: hasText ? "scale(1)" : "scale(0.9)",
+          boxShadow: hasText ? "0 4px 12px rgba(0,122,255,0.35)" : "none",
+          flexShrink: 0
+        }}
+      >
+        ↑
       </button>
-
     </div>
-
   );
 }
 
 export default MessageInput;
-</file>
-
-<file path="client/src/components/Navbar.jsx">
-import { useContext } from "react";
-
-import { Link, useNavigate } from "react-router-dom";
-
-import { AuthContext } from "../context/AuthContext";
-
-function Navbar() {
-
-  const { user, logout } = useContext(AuthContext);
-
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-
-    logout();
-
-    navigate("/login");
-
-  };
-
-  return (
-
-    <nav>
-
-      <Link to="/">
-        Home
-      </Link>
-
-      {" | "}
-
-      {user ? (
-
-        <>
-
-          <span>
-            Welcome {user.name}
-          </span>
-
-          {" | "}
-
-          <button onClick={handleLogout}>
-            Logout
-          </button>
-
-        </>
-
-      ) : (
-
-        <>
-
-          <Link to="/login">
-            Login
-          </Link>
-
-          {" | "}
-
-          <Link to="/register">
-            Register
-          </Link>
-
-        </>
-
-      )}
-
-    </nav>
-
-  );
-}
-
-export default Navbar;
 </file>
 
 <file path="client/src/components/ProtectedRoute.jsx">
@@ -795,57 +753,166 @@ export default ProtectedRoute;
 </file>
 
 <file path="client/src/components/Sidebar.jsx">
-function Sidebar({
+import { useState } from "react";
 
-  groups,
+function Sidebar({ groups, selectedGroup, setSelectedGroup, lastMessages = {}, currentUser }) {
+  const [search, setSearch] = useState("");
 
-  selectedGroup,
-
-  setSelectedGroup
-
-}) {
+  const filtered = groups.filter(g =>
+    g.name.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
+    <div style={{
+      width: "var(--sidebar-width)",
+      minWidth: "260px",
+      display: "flex",
+      flexDirection: "column",
+      background: "var(--bg-glass)",
+      backdropFilter: "var(--blur)",
+      WebkitBackdropFilter: "var(--blur)",
+      borderRight: "1px solid var(--border)",
+      overflow: "hidden"
+    }}>
 
-    <div
-      style={{
-        width: "30%",
-        borderRight: "1px solid gray",
-        padding: "10px"
-      }}
-    >
+      {/* Header */}
+      <div style={{
+        padding: "16px 16px 12px",
+        borderBottom: "1px solid var(--border)"
+      }}>
+        <h2 style={{
+          fontSize: "20px",
+          fontWeight: "700",
+          letterSpacing: "-0.4px",
+          color: "var(--text-primary)",
+          marginBottom: "12px"
+        }}>
+          Messages
+        </h2>
 
-      <h2>Groups</h2>
-
-      {
-
-        groups.map((group) => (
-
-          <div
-
-            key={group._id}
-
-            onClick={() => setSelectedGroup(group)}
-
+        {/* Search */}
+        <div style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "8px",
+          background: "var(--bg-input)",
+          borderRadius: "var(--radius-sm)",
+          padding: "8px 12px",
+          border: "1px solid var(--border)"
+        }}>
+          <span style={{ fontSize: "13px", color: "var(--text-tertiary)" }}>🔍</span>
+          <input
+            type="text"
+            placeholder="Search groups…"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
             style={{
-              padding: "10px",
-              marginBottom: "5px",
-              cursor: "pointer",
-              background:
-                selectedGroup?._id === group._id
-                  ? "#ddd"
-                  : "transparent"
+              flex: 1,
+              border: "none",
+              background: "transparent",
+              outline: "none",
+              fontSize: "14px",
+              color: "var(--text-primary)"
             }}
-          >
+          />
+        </div>
+      </div>
 
-            {group.name}
-
+      {/* Group list */}
+      <div style={{ flex: 1, overflowY: "auto", padding: "8px" }}>
+        {filtered.length === 0 ? (
+          <div style={{
+            padding: "32px 16px",
+            textAlign: "center",
+            color: "var(--text-tertiary)",
+            fontSize: "13px"
+          }}>
+            {search ? "No groups found" : "No groups yet"}
           </div>
+        ) : (
+          filtered.map((group, i) => {
+            const isActive = selectedGroup?._id === group._id;
+            const lastMsg = lastMessages[group._id];
+            let preview = "No messages yet";
+            if (lastMsg) {
+              const isMe = lastMsg.sender._id === currentUser._id;
+              const label = isMe ? "You" : lastMsg.sender.name;
+              const text = `${label}: ${lastMsg.content}`;
+              preview = text.length > 34 ? text.slice(0, 34) + "…" : text;
+            }
 
-        ))
+            return (
+              <div
+                key={group._id}
+                onClick={() => setSelectedGroup(group)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "11px",
+                  padding: "10px 12px",
+                  borderRadius: "var(--radius-md)",
+                  cursor: "pointer",
+                  background: isActive ? "var(--bg-active)" : "transparent",
+                  transition: "background 0.15s ease",
+                  animation: `fadeUp 0.3s ease ${i * 0.04}s both`
+                }}
+                onMouseEnter={e => {
+                  if (!isActive) e.currentTarget.style.background = "var(--bg-hover)";
+                }}
+                onMouseLeave={e => {
+                  if (!isActive) e.currentTarget.style.background = "transparent";
+                }}
+              >
+                {/* Avatar */}
+                <div style={{
+                  width: "46px",
+                  height: "46px",
+                  borderRadius: "50%",
+                  background: isActive
+                    ? "var(--accent)"
+                    : "linear-gradient(135deg, #c0c0c5 0%, #9b9ba0 100%)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontWeight: "700",
+                  fontSize: "17px",
+                  color: "#fff",
+                  flexShrink: 0,
+                  transition: "background 0.2s ease",
+                  boxShadow: isActive ? "0 4px 12px rgba(0,122,255,0.3)" : "none"
+                }}>
+                  {group.name.charAt(0).toUpperCase()}
+                </div>
 
-      }
-
+                {/* Text */}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{
+                    fontWeight: "600",
+                    fontSize: "14px",
+                    color: "var(--text-primary)",
+                    letterSpacing: "-0.2px",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis"
+                  }}>
+                    {group.name}
+                  </div>
+                  <div style={{
+                    fontSize: "12px",
+                    color: "var(--text-secondary)",
+                    marginTop: "2px",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis"
+                  }}>
+                    {preview}
+                  </div>
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
     </div>
   );
 }
@@ -853,7 +920,7 @@ function Sidebar({
 export default Sidebar;
 </file>
 
-<file path="client/src/context/AuthContext.jsx">
+<file path="client/src/context/authContext.jsx">
 import { createContext } from "react";
 
 export const AuthContext = createContext();
@@ -902,18 +969,17 @@ export const SocketContext = createContext();
 </file>
 
 <file path="client/src/context/SocketProvider.jsx">
-import { useEffect, useState,useContext } from "react";
+import { useEffect, useState, useContext } from "react";
 import { io } from "socket.io-client";
 import { AuthContext } from "./AuthContext";
-
 import { SocketContext } from "./SocketContext";
 
 const socket = io("http://localhost:5000");
 
-const SocketProvider = ({ children}) => {
+const SocketProvider = ({ children }) => {
   const { user } = useContext(AuthContext);
   const [onlineUsers, setOnlineUsers] = useState([]);
-  const [typingUser, setTypingUser] = useState("");
+  const [typingUsers, setTypingUsers] = useState({}); // { groupId: "userName" }
 
   useEffect(() => {
     if (user) {
@@ -922,49 +988,35 @@ const SocketProvider = ({ children}) => {
   }, [user]);
 
   useEffect(() => {
-    socket.on("online_users", (users) => {
-      setOnlineUsers(users);
-    });
-
-    return () => {
-      socket.off("online_users");
-    };
+    const handleOnlineUsers = (users) => setOnlineUsers(users);
+    socket.on("online_users", handleOnlineUsers);
+    return () => socket.off("online_users", handleOnlineUsers);
   }, []);
 
   useEffect(() => {
-      socket.on("user_typing", (userName) => {
+    const handleTyping = ({ groupId, userName }) => {
+      setTypingUsers((prev) => ({ ...prev, [groupId]: userName }));
+    };
 
-  console.log("USER_TYPING RECEIVED");
-  console.log(userName);
+    const handleStopTyping = ({ groupId }) => {
+      setTypingUsers((prev) => {
+        const updated = { ...prev };
+        delete updated[groupId];
+        return updated;
+      });
+    };
 
-  setTypingUser(userName);
-
-});
-
-
-socket.on("user_stop_typing", () => {
-
-  console.log("STOP_TYPING RECEIVED");
-
-  setTypingUser("");
-
-});
-    
+    socket.on("user_typing", handleTyping);
+    socket.on("user_stop_typing", handleStopTyping);
 
     return () => {
-      socket.off("user_typing");
-      socket.off("user_stop_typing");
+      socket.off("user_typing", handleTyping);
+      socket.off("user_stop_typing", handleStopTyping);
     };
   }, []);
 
   return (
-    <SocketContext.Provider
-      value={{
-        socket,
-        onlineUsers,
-        typingUser,
-      }}
-    >
+    <SocketContext.Provider value={{ socket, onlineUsers, typingUsers }}>
       {children}
     </SocketContext.Provider>
   );
@@ -974,7 +1026,145 @@ export default SocketProvider;
 </file>
 
 <file path="client/src/index.css">
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
 
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* Light Mode */
+  --bg-primary: #f5f5f7;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f0f0f2;
+  --bg-glass: rgba(255, 255, 255, 0.72);
+  --bg-glass-heavy: rgba(255, 255, 255, 0.88);
+  --bg-input: rgba(0, 0, 0, 0.05);
+  --bg-hover: rgba(0, 0, 0, 0.04);
+  --bg-active: rgba(0, 122, 255, 0.08);
+
+  --text-primary: #1d1d1f;
+  --text-secondary: #6e6e73;
+  --text-tertiary: #aeaeb2;
+  --text-on-accent: #ffffff;
+
+  --accent: #007aff;
+  --accent-hover: #0066d6;
+  --accent-soft: rgba(0, 122, 255, 0.12);
+  --accent-bubble: #007aff;
+
+  --bubble-me: #007aff;
+  --bubble-me-text: #ffffff;
+  --bubble-other: #e9e9eb;
+  --bubble-other-text: #1d1d1f;
+
+  --border: rgba(0, 0, 0, 0.08);
+  --border-strong: rgba(0, 0, 0, 0.14);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04);
+  --shadow-lg: 0 20px 60px rgba(0,0,0,0.12), 0 8px 24px rgba(0,0,0,0.06);
+  --shadow-card: 0 2px 20px rgba(0,0,0,0.08);
+
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-full: 9999px;
+
+  --sidebar-width: 300px;
+  --navbar-height: 52px;
+
+  --blur: blur(20px) saturate(180%);
+}
+
+[data-theme="dark"] {
+  --bg-primary: #000000;
+  --bg-secondary: #1c1c1e;
+  --bg-tertiary: #2c2c2e;
+  --bg-glass: rgba(28, 28, 30, 0.82);
+  --bg-glass-heavy: rgba(28, 28, 30, 0.95);
+  --bg-input: rgba(255, 255, 255, 0.07);
+  --bg-hover: rgba(255, 255, 255, 0.06);
+  --bg-active: rgba(0, 122, 255, 0.15);
+
+  --text-primary: #f5f5f7;
+  --text-secondary: #98989d;
+  --text-tertiary: #636366;
+  --text-on-accent: #ffffff;
+
+  --accent: #0a84ff;
+  --accent-hover: #409cff;
+  --accent-soft: rgba(10, 132, 255, 0.15);
+
+  --bubble-me: #0a84ff;
+  --bubble-me-text: #ffffff;
+  --bubble-other: #2c2c2e;
+  --bubble-other-text: #f5f5f7;
+
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.14);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
+  --shadow-lg: 0 20px 60px rgba(0,0,0,0.6);
+  --shadow-card: 0 2px 20px rgba(0,0,0,0.5);
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  height: 100vh;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+#root {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+input, button, textarea {
+  font-family: 'DM Sans', sans-serif;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 0px; }
+
+/* Animations */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes typingBounce {
+  0%, 60%, 100% { transform: translateY(0); }
+  30% { transform: translateY(-5px); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
 </file>
 
 <file path="client/src/main.jsx">
@@ -1004,495 +1194,633 @@ ReactDOM.createRoot(document.getElementById("root")).render(
 </file>
 
 <file path="client/src/pages/Home.jsx">
-import { useContext,useEffect,useState } from "react";
-
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
-
 import API from "../services/api";
-
 import Sidebar from "../components/Sidebar";
-
 import ChatBox from "../components/ChatBox";
-
 import MessageInput from "../components/MessageInput";
-
 import { SocketContext } from "../context/SocketContext";
 
 function Home() {
-  const {
-          socket,
-          onlineUsers
-         } = useContext(SocketContext);
-
+  const { socket, onlineUsers } = useContext(SocketContext);
   const { user } = useContext(AuthContext);
 
   const [groups, setGroups] = useState([]);
-
   const [groupName, setGroupName] = useState("");
-
   const [memberEmail, setMemberEmail] = useState("");
-
   const [messages, setMessages] = useState([]);
-
   const [selectedGroup, setSelectedGroup] = useState(null);
-
- 
+  const [lastMessages, setLastMessages] = useState({});
+  const [showCreateGroup, setShowCreateGroup] = useState(false);
+  const [showAddMember, setShowAddMember] = useState(false);
 
   // LOAD GROUPS
   useEffect(() => {
-  const loadGroups = async () => {
-    try {
-      const res = await API.get("/groups", {
-        headers: {
-          Authorization: `Bearer ${user.token}`
-        }
-      });
-      setGroups(res.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+    const loadGroups = async () => {
+      try {
+        const res = await API.get("/groups", {
+          headers: { Authorization: `Bearer ${user.token}` }
+        });
+        setGroups(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    loadGroups();
+  }, [user]);
 
-  loadGroups();
-}, [user]);
+  // JOIN GROUP + LOAD MESSAGES
+  useEffect(() => {
+    if (!selectedGroup) return;
+    socket.emit("join_group", selectedGroup._id);
+
+    const loadMessages = async () => {
+      try {
+        const res = await API.get(`/messages/${selectedGroup._id}`, {
+          headers: { Authorization: `Bearer ${user.token}` }
+        });
+        setMessages(res.data);
+        if (res.data.length > 0) {
+          setLastMessages((prev) => ({
+            ...prev,
+            [selectedGroup._id]: res.data[res.data.length - 1]
+          }));
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    loadMessages();
+  }, [selectedGroup, user, socket]);
+
+  // RECEIVE MESSAGE
+  useEffect(() => {
+    const handleReceiveMessage = (message) => {
+      setMessages((prev) => [...prev, message]);
+      setLastMessages((prev) => ({
+        ...prev,
+        [message.group._id]: message
+      }));
+    };
+    socket.on("receive_message", handleReceiveMessage);
+    return () => socket.off("receive_message", handleReceiveMessage);
+  }, [socket]);
 
   // CREATE GROUP
   const createGroup = async () => {
-
+    if (!groupName.trim()) return;
     try {
-
       const res = await API.post(
-
         "/groups",
-
-        {
-          name: groupName
-        },
-
-        {
-          headers: {
-            Authorization: `Bearer ${user.token}`
-          }
-        }
-
+        { name: groupName },
+        { headers: { Authorization: `Bearer ${user.token}` } }
       );
-
       setGroups([...groups, res.data]);
-
       setGroupName("");
-
+      setShowCreateGroup(false);
     } catch (error) {
-
       console.log(error);
-
     }
-
   };
 
-
   // ADD MEMBER
-const addMember = async () => {
-
-  try {
-
-    await API.put(
-
-      "/groups/add-member",
-
-      {
-        groupId: selectedGroup._id,
-        email: memberEmail
-      },
-
-      {
-        headers: {
-          Authorization: `Bearer ${user.token}`
-        }
-      }
-
-    );
-
-    alert("Member Added");
-
-    setMemberEmail("");
-
-  } catch (error) {
-
-    console.log(error);
-
-    alert(error.response.data.message);
-
-  }
-
-};
-
+  const addMember = async () => {
+    if (!memberEmail.trim()) return;
+    try {
+      await API.put(
+        "/groups/add-member",
+        { groupId: selectedGroup._id, email: memberEmail },
+        { headers: { Authorization: `Bearer ${user.token}` } }
+      );
+      alert("Member Added");
+      setMemberEmail("");
+      setShowAddMember(false);
+    } catch (error) {
+      alert(error.response?.data?.message || "Error adding member");
+    }
+  };
 
   // SEND MESSAGE
   const sendMessage = async (content) => {
-
     try {
-
       const res = await API.post(
-
         "/messages",
-
-        {
-          groupId: selectedGroup._id,
-          content
-        },
-
-        {
-          headers: {
-            Authorization: `Bearer ${user.token}`
-          }
-        }
-
+        { groupId: selectedGroup._id, content },
+        { headers: { Authorization: `Bearer ${user.token}` } }
       );
-    
-       socket.emit(
-       "send_message",
-        res.data
-        );
-
+      socket.emit("send_message", res.data);
     } catch (error) {
-
       console.log(error);
-
     }
-
   };
 
+  const onlineCount = selectedGroup?.members?.filter(
+    (m) => onlineUsers.includes(m._id)
+  ).length || 0;
 
+  return (
+    <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
 
-useEffect(() => {
-
-  if (!selectedGroup) return;
-
-    socket.emit(
-     "join_group",
-     selectedGroup._id
-  );
-
-  const loadMessages = async () => {
-
-    try {
-
-      const res = await API.get(
-
-        `/messages/${selectedGroup._id}`,
-
-        {
-          headers: {
-            Authorization: `Bearer ${user.token}`
-          }
-        }
-
-      );
-
-      setMessages(res.data);
-
-    } catch (error) {
-
-      console.log(error);
-
-    }
-
-  };
-
-  loadMessages();
-
-}, [selectedGroup, user, socket]);
-
-
-
-
-useEffect(() => {
-
-  socket.on(
-
-    "receive_message",
-
-    (message) => {
-
-         console.log("RECEIVED MESSAGE:", message);
-
-      setMessages((prev) => [
-
-        ...prev,
-        message
-
-      ]);
-
-    }
-
-  );
-  
-
-  return () => {
-
-    socket.off("receive_message");
-
-  };
-
-}, [socket]);
-
-
-console.log(selectedGroup);
-
- return (
-
-    <div 
-        style={{
+      {/* ── SIDEBAR COLUMN ── */}
+      <div style={{
+        width: "var(--sidebar-width)",
+        minWidth: "260px",
         display: "flex",
-        height: "100vh"
-      }}
-    >
+        flexDirection: "column",
+        borderRight: "1px solid var(--border)"
+      }}>
 
+        {/* Group list */}
+        <div style={{ flex: 1, overflow: "hidden", display: "flex", flexDirection: "column" }}>
+          <Sidebar
+            groups={groups}
+            selectedGroup={selectedGroup}
+            setSelectedGroup={setSelectedGroup}
+            lastMessages={lastMessages}
+            currentUser={user}
+          />
+        </div>
 
-    <Sidebar
-        groups={groups}
-        selectedGroup={selectedGroup}
-        setSelectedGroup={setSelectedGroup}
-      />
+        {/* CREATE GROUP BUTTON */}
+        <div style={{
+          padding: "10px 12px",
+          borderTop: "1px solid var(--border)",
+          background: "var(--bg-glass)",
+          backdropFilter: "var(--blur)",
+          WebkitBackdropFilter: "var(--blur)"
+        }}>
+          {showCreateGroup ? (
+            <div style={{ display: "flex", gap: "8px" }}>
+              <input
+                type="text"
+                placeholder="Group name…"
+                value={groupName}
+                onChange={(e) => setGroupName(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && createGroup()}
+                autoFocus
+                style={{
+                  flex: 1,
+                  padding: "9px 13px",
+                  borderRadius: "var(--radius-sm)",
+                  border: "1.5px solid var(--accent)",
+                  background: "var(--bg-input)",
+                  color: "var(--text-primary)",
+                  fontSize: "13px",
+                  outline: "none"
+                }}
+              />
+              <button
+                onClick={createGroup}
+                style={{
+                  padding: "9px 13px",
+                  borderRadius: "var(--radius-sm)",
+                  border: "none",
+                  background: "var(--accent)",
+                  color: "#fff",
+                  fontWeight: "600",
+                  fontSize: "13px",
+                  cursor: "pointer"
+                }}
+              >
+                ✓
+              </button>
+              <button
+                onClick={() => setShowCreateGroup(false)}
+                style={{
+                  padding: "9px 13px",
+                  borderRadius: "var(--radius-sm)",
+                  border: "1px solid var(--border)",
+                  background: "transparent",
+                  color: "var(--text-secondary)",
+                  fontSize: "13px",
+                  cursor: "pointer"
+                }}
+              >
+                ✕
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => setShowCreateGroup(true)}
+              style={{
+                width: "100%",
+                padding: "10px",
+                borderRadius: "var(--radius-sm)",
+                border: "1.5px dashed var(--border)",
+                background: "transparent",
+                color: "var(--text-secondary)",
+                fontWeight: "600",
+                fontSize: "13px",
+                cursor: "pointer",
+                transition: "all 0.2s ease"
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.borderColor = "var(--accent)";
+                e.currentTarget.style.color = "var(--accent)";
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.borderColor = "var(--border)";
+                e.currentTarget.style.color = "var(--text-secondary)";
+              }}
+            >
+              + New Group
+            </button>
+          )}
+        </div>
+      </div>
 
+      {/* ── MAIN CHAT AREA ── */}
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
 
-       <div
-        style={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column"
-        }}
-      >
+        {selectedGroup ? (
+          <>
+            {/* CHAT HEADER */}
+            <div style={{
+              padding: "12px 20px",
+              background: "var(--bg-glass)",
+              backdropFilter: "var(--blur)",
+              WebkitBackdropFilter: "var(--blur)",
+              borderBottom: "1px solid var(--border)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              flexShrink: 0
+            }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                <div style={{
+                  width: "40px",
+                  height: "40px",
+                  borderRadius: "50%",
+                  background: "var(--accent)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontWeight: "700",
+                  fontSize: "16px",
+                  color: "#fff",
+                  boxShadow: "0 4px 12px rgba(0,122,255,0.3)"
+                }}>
+                  {selectedGroup.name.charAt(0).toUpperCase()}
+                </div>
+                <div>
+                  <div style={{
+                    fontWeight: "700",
+                    fontSize: "15px",
+                    letterSpacing: "-0.2px",
+                    color: "var(--text-primary)"
+                  }}>
+                    {selectedGroup.name}
+                  </div>
+                  <div style={{ fontSize: "12px", color: "var(--text-secondary)" }}>
+                    {selectedGroup.members?.length || 0} members
+                    {onlineCount > 0 && (
+                      <span style={{ color: "var(--accent)", marginLeft: "6px" }}>
+                        · {onlineCount} online
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
 
+              {/* ADD MEMBER */}
+              <div>
+                {showAddMember ? (
+                  <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                    <input
+                      type="email"
+                      placeholder="Email address…"
+                      value={memberEmail}
+                      onChange={(e) => setMemberEmail(e.target.value)}
+                      onKeyDown={(e) => e.key === "Enter" && addMember()}
+                      autoFocus
+                      style={{
+                        padding: "7px 12px",
+                        borderRadius: "var(--radius-sm)",
+                        border: "1.5px solid var(--accent)",
+                        background: "var(--bg-input)",
+                        color: "var(--text-primary)",
+                        fontSize: "13px",
+                        outline: "none",
+                        width: "220px"
+                      }}
+                    />
+                    <button
+                      onClick={addMember}
+                      style={{
+                        padding: "7px 14px",
+                        borderRadius: "var(--radius-sm)",
+                        border: "none",
+                        background: "var(--accent)",
+                        color: "#fff",
+                        fontWeight: "600",
+                        fontSize: "13px",
+                        cursor: "pointer"
+                      }}
+                    >
+                      Add
+                    </button>
+                    <button
+                      onClick={() => setShowAddMember(false)}
+                      style={{
+                        padding: "7px 12px",
+                        borderRadius: "var(--radius-sm)",
+                        border: "1px solid var(--border)",
+                        background: "transparent",
+                        color: "var(--text-secondary)",
+                        fontSize: "13px",
+                        cursor: "pointer"
+                      }}
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setShowAddMember(true)}
+                    style={{
+                      padding: "7px 14px",
+                      borderRadius: "var(--radius-full)",
+                      border: "1px solid var(--border)",
+                      background: "transparent",
+                      color: "var(--text-secondary)",
+                      fontSize: "13px",
+                      fontWeight: "500",
+                      cursor: "pointer",
+                      transition: "all 0.2s ease"
+                    }}
+                    onMouseEnter={e => {
+                      e.currentTarget.style.borderColor = "var(--accent)";
+                      e.currentTarget.style.color = "var(--accent)";
+                    }}
+                    onMouseLeave={e => {
+                      e.currentTarget.style.borderColor = "var(--border)";
+                      e.currentTarget.style.color = "var(--text-secondary)";
+                    }}
+                  >
+                    + Add Member
+                  </button>
+                )}
+              </div>
+            </div>
 
-         <div
-          style={{
-            padding: "10px",
-            borderBottom: "1px solid gray"
-          }}
-        >
+            {/* CHATBOX */}
+            <ChatBox
+              messages={messages}
+              user={user}
+              groupId={selectedGroup._id}
+            />
 
-            
-         <div>
-
-  <h2>
-    {selectedGroup
-      ? selectedGroup.name
-      : "Select Group"}
-  </h2>
-
-  {
-
-  selectedGroup?.members?.map((member) => (
-
-  <div key={member._id}>
-
-    {
-      onlineUsers.includes(member._id)
-        ? "🟢"
-        : "⚫"
-    }
-
-    {" "}
-
-    {member.name}
-
-  </div>
-
-))
-
-  }
-
-</div>
-
-
-
-          </div>
-
-
-          <div
-  style={{
-    background: "yellow"
-  }}
->
-  CHATBOX START
-</div>
-
-<ChatBox
-  messages={messages}
-  user={user}
-/>
-
-
-
-            {
-
-          selectedGroup && (
-
+            {/* MESSAGE INPUT */}
             <MessageInput
               sendMessage={sendMessage}
               groupId={selectedGroup._id}
               userName={user.name}
             />
+          </>
+        ) : (
 
-          )
-
-        }
-
-
-        {
-
-  selectedGroup && (
-
-    <div
-      style={{
-        padding: "10px"
-      }}
-    >
-
-      <input
-        type="email"
-        placeholder="Add member by email"
-        value={memberEmail}
-        onChange={(e) =>
-          setMemberEmail(e.target.value)
-        }
-      />
-
-      <button onClick={addMember}>
-        Add Member
-      </button>
-
-    </div>
-
-  )
-
-}
-
-        <div
-          style={{
-            padding: "10px"
-          }}
-        >
-
-          <input
-            type="text"
-            placeholder="New Group"
-            value={groupName}
-            onChange={(e) =>
-              setGroupName(e.target.value)
-            }
-          />
-
-           <button onClick={createGroup}>
-            Create Group
-          </button>
-
+          /* EMPTY STATE */
+          <div style={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "var(--bg-primary)",
+            gap: "14px"
+          }}>
+            <div style={{
+              width: "72px",
+              height: "72px",
+              borderRadius: "20px",
+              background: "var(--accent-soft)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "32px"
+            }}>
+              💬
+            </div>
+            <div style={{ textAlign: "center" }}>
+              <h2 style={{
+                fontSize: "20px",
+                fontWeight: "700",
+                letterSpacing: "-0.4px",
+                color: "var(--text-primary)",
+                marginBottom: "6px"
+              }}>
+                GroupChat
+              </h2>
+              <p style={{
+                fontSize: "14px",
+                color: "var(--text-secondary)",
+                maxWidth: "260px",
+                lineHeight: "1.5"
+              }}>
+                Select a group to start chatting, or create a new one from the sidebar.
+              </p>
+            </div>
           </div>
-          
-        </div>
 
+        )}
       </div>
-
-    
+    </div>
   );
 }
-
-
-
 
 export default Home;
 </file>
 
 <file path="client/src/pages/Login.jsx">
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-
+import { useState, useContext } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import API from "../services/api";
+import { AuthContext } from "../context/AuthContext";
 
 function Login() {
-
   const navigate = useNavigate();
+  const { setUser } = useContext(AuthContext);
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const [formData, setFormData] = useState({
-    email: "",
-    password: ""
-  });
+  const handleChange = (e) =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
 
-
-
- const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-
-
-
-
-   const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setError("");
+    setLoading(true);
     try {
-
-      const res = await API.post(
-        "/auth/login",
-        formData
-      );
- 
-     
-      localStorage.setItem(
-        "userInfo",
-        JSON.stringify(res.data)
-      );
-  
-
-      alert("Login Successful");
-
+      const res = await API.post("/auth/login", formData);
+      localStorage.setItem("userInfo", JSON.stringify(res.data));
+      setUser(res.data);
       navigate("/");
-
-    } catch (error) {
-
-      alert(error.response.data.message);
-
+    } catch (err) {
+      setError(err.response?.data?.message || "Login failed");
+    } finally {
+      setLoading(false);
     }
   };
 
+  const inputStyle = {
+    width: "100%",
+    padding: "13px 16px",
+    borderRadius: "var(--radius-sm)",
+    border: "1.5px solid var(--border)",
+    background: "var(--bg-input)",
+    color: "var(--text-primary)",
+    fontSize: "15px",
+    outline: "none",
+    transition: "border-color 0.2s ease, background 0.2s ease",
+  };
 
-   return (
-    <div>
+  return (
+    <div style={{
+      minHeight: "100vh",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      background: "var(--bg-primary)",
+      padding: "20px"
+    }}>
+      <div style={{
+        width: "100%",
+        maxWidth: "380px",
+        animation: "scaleIn 0.4s cubic-bezier(0.34,1.56,0.64,1)"
+      }}>
 
-      <h1>Login</h1>
+        {/* Icon */}
+        <div style={{ textAlign: "center", marginBottom: "32px" }}>
+          <div style={{
+            width: "64px",
+            height: "64px",
+            borderRadius: "18px",
+            background: "var(--accent)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: "28px",
+            margin: "0 auto 16px",
+            boxShadow: "0 8px 24px rgba(0,122,255,0.35)"
+          }}>
+            💬
+          </div>
+          <h1 style={{
+            fontSize: "26px",
+            fontWeight: "700",
+            letterSpacing: "-0.6px",
+            color: "var(--text-primary)"
+          }}>
+            Sign in
+          </h1>
+          <p style={{ fontSize: "14px", color: "var(--text-secondary)", marginTop: "6px" }}>
+            to GroupChat
+          </p>
+        </div>
 
-      <form onSubmit={handleSubmit}>
+        {/* Card */}
+        <div style={{
+          background: "var(--bg-glass-heavy)",
+          backdropFilter: "var(--blur)",
+          WebkitBackdropFilter: "var(--blur)",
+          borderRadius: "var(--radius-xl)",
+          border: "1px solid var(--border)",
+          padding: "28px 28px 24px",
+          boxShadow: "var(--shadow-lg)"
+        }}>
 
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          onChange={handleChange}
-        />
+          {error && (
+            <div style={{
+              background: "rgba(255,59,48,0.1)",
+              border: "1px solid rgba(255,59,48,0.2)",
+              color: "#ff3b30",
+              padding: "10px 14px",
+              borderRadius: "var(--radius-sm)",
+              fontSize: "13px",
+              marginBottom: "16px",
+              fontWeight: "500"
+            }}>
+              {error}
+            </div>
+          )}
 
-        <br />
-        <br />
+          <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
 
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          onChange={handleChange}
-        />
+            <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+              <label style={{ fontSize: "12px", fontWeight: "600", color: "var(--text-secondary)", letterSpacing: "0.4px", textTransform: "uppercase" }}>
+                Email
+              </label>
+              <input
+                type="email"
+                name="email"
+                placeholder="you@example.com"
+                onChange={handleChange}
+                required
+                style={inputStyle}
+                onFocus={e => {
+                  e.target.style.borderColor = "var(--accent)";
+                  e.target.style.background = "var(--bg-secondary)";
+                }}
+                onBlur={e => {
+                  e.target.style.borderColor = "var(--border)";
+                  e.target.style.background = "var(--bg-input)";
+                }}
+              />
+            </div>
 
-        <br />
-        <br />
+            <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+              <label style={{ fontSize: "12px", fontWeight: "600", color: "var(--text-secondary)", letterSpacing: "0.4px", textTransform: "uppercase" }}>
+                Password
+              </label>
+              <input
+                type="password"
+                name="password"
+                placeholder="••••••••"
+                onChange={handleChange}
+                required
+                style={inputStyle}
+                onFocus={e => {
+                  e.target.style.borderColor = "var(--accent)";
+                  e.target.style.background = "var(--bg-secondary)";
+                }}
+                onBlur={e => {
+                  e.target.style.borderColor = "var(--border)";
+                  e.target.style.background = "var(--bg-input)";
+                }}
+              />
+            </div>
 
-        <button type="submit">
-          Login
-        </button>
+            <button
+              type="submit"
+              disabled={loading}
+              style={{
+                marginTop: "6px",
+                padding: "13px",
+                borderRadius: "var(--radius-sm)",
+                border: "none",
+                background: loading ? "var(--text-tertiary)" : "var(--accent)",
+                color: "#fff",
+                fontWeight: "600",
+                fontSize: "15px",
+                cursor: loading ? "not-allowed" : "pointer",
+                transition: "all 0.2s ease",
+                boxShadow: loading ? "none" : "0 4px 14px rgba(0,122,255,0.35)"
+              }}
+            >
+              {loading ? "Signing in…" : "Continue"}
+            </button>
+          </form>
+        </div>
 
-      </form>
-
+        <p style={{ textAlign: "center", fontSize: "13px", color: "var(--text-secondary)", marginTop: "20px" }}>
+          Don't have an account?{" "}
+          <Link to="/register" style={{ color: "var(--accent)", fontWeight: "600", textDecoration: "none" }}>
+            Create one
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }
@@ -1501,113 +1829,179 @@ export default Login;
 </file>
 
 <file path="client/src/pages/Register.jsx">
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import API from "../services/api";
-
-
-
+import { AuthContext } from "../context/AuthContext";
 
 function Register() {
-
   const navigate = useNavigate();
+  const { setUser } = useContext(AuthContext);
+  const [formData, setFormData] = useState({ name: "", email: "", password: "" });
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: ""
-  });
+  const handleChange = (e) =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
 
-
-
-   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-
-
-
-   const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setError("");
+    setLoading(true);
     try {
-
-      const res = await API.post(
-        "/auth/register",
-        formData
-      );
-
-      console.log(res.data);
-
-      localStorage.setItem(
-      "userInfo",
-      JSON.stringify(res.data)
-      );
-
+      const res = await API.post("/auth/register", formData);
+      localStorage.setItem("userInfo", JSON.stringify(res.data));
+      setUser(res.data);
       navigate("/");
-
-      alert("Registration Successful");
-
-    } catch (error) {
-
-      console.log(error.response.data);
-
-      alert(error.response.data.message);
-
+    } catch (err) {
+      setError(err.response?.data?.message || "Registration failed");
+    } finally {
+      setLoading(false);
     }
   };
 
+  const inputStyle = {
+    width: "100%",
+    padding: "13px 16px",
+    borderRadius: "var(--radius-sm)",
+    border: "1.5px solid var(--border)",
+    background: "var(--bg-input)",
+    color: "var(--text-primary)",
+    fontSize: "15px",
+    outline: "none",
+    transition: "border-color 0.2s ease, background 0.2s ease",
+  };
 
-    return (
-    <div>
+  return (
+    <div style={{
+      minHeight: "100vh",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      background: "var(--bg-primary)",
+      padding: "20px"
+    }}>
+      <div style={{
+        width: "100%",
+        maxWidth: "380px",
+        animation: "scaleIn 0.4s cubic-bezier(0.34,1.56,0.64,1)"
+      }}>
 
-      <h1>Register</h1>
+        <div style={{ textAlign: "center", marginBottom: "32px" }}>
+          <div style={{
+            width: "64px",
+            height: "64px",
+            borderRadius: "18px",
+            background: "var(--accent)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: "28px",
+            margin: "0 auto 16px",
+            boxShadow: "0 8px 24px rgba(0,122,255,0.35)"
+          }}>
+            💬
+          </div>
+          <h1 style={{
+            fontSize: "26px",
+            fontWeight: "700",
+            letterSpacing: "-0.6px",
+            color: "var(--text-primary)"
+          }}>
+            Create account
+          </h1>
+          <p style={{ fontSize: "14px", color: "var(--text-secondary)", marginTop: "6px" }}>
+            Join GroupChat today
+          </p>
+        </div>
 
-      <form onSubmit={handleSubmit}>
+        <div style={{
+          background: "var(--bg-glass-heavy)",
+          backdropFilter: "var(--blur)",
+          WebkitBackdropFilter: "var(--blur)",
+          borderRadius: "var(--radius-xl)",
+          border: "1px solid var(--border)",
+          padding: "28px 28px 24px",
+          boxShadow: "var(--shadow-lg)"
+        }}>
 
-        <input
-          type="text"
-          name="name"
-          placeholder="Name"
-          onChange={handleChange}
-        />
+          {error && (
+            <div style={{
+              background: "rgba(255,59,48,0.1)",
+              border: "1px solid rgba(255,59,48,0.2)",
+              color: "#ff3b30",
+              padding: "10px 14px",
+              borderRadius: "var(--radius-sm)",
+              fontSize: "13px",
+              marginBottom: "16px",
+              fontWeight: "500"
+            }}>
+              {error}
+            </div>
+          )}
 
-        <br />
-        <br />
+          <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
 
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          onChange={handleChange}
-        />
+            {[
+              { label: "Full Name", name: "name", type: "text", placeholder: "Your name" },
+              { label: "Email", name: "email", type: "email", placeholder: "you@example.com" },
+              { label: "Password", name: "password", type: "password", placeholder: "••••••••" }
+            ].map(({ label, name, type, placeholder }) => (
+              <div key={name} style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                <label style={{ fontSize: "12px", fontWeight: "600", color: "var(--text-secondary)", letterSpacing: "0.4px", textTransform: "uppercase" }}>
+                  {label}
+                </label>
+                <input
+                  type={type}
+                  name={name}
+                  placeholder={placeholder}
+                  onChange={handleChange}
+                  required
+                  style={inputStyle}
+                  onFocus={e => {
+                    e.target.style.borderColor = "var(--accent)";
+                    e.target.style.background = "var(--bg-secondary)";
+                  }}
+                  onBlur={e => {
+                    e.target.style.borderColor = "var(--border)";
+                    e.target.style.background = "var(--bg-input)";
+                  }}
+                />
+              </div>
+            ))}
 
-        <br />
-        <br />
+            <button
+              type="submit"
+              disabled={loading}
+              style={{
+                marginTop: "6px",
+                padding: "13px",
+                borderRadius: "var(--radius-sm)",
+                border: "none",
+                background: loading ? "var(--text-tertiary)" : "var(--accent)",
+                color: "#fff",
+                fontWeight: "600",
+                fontSize: "15px",
+                cursor: loading ? "not-allowed" : "pointer",
+                transition: "all 0.2s ease",
+                boxShadow: loading ? "none" : "0 4px 14px rgba(0,122,255,0.35)"
+              }}
+            >
+              {loading ? "Creating account…" : "Continue"}
+            </button>
+          </form>
+        </div>
 
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          onChange={handleChange}
-        />
-
-        <br />
-        <br />
-
-        <button type="submit">
-          Register
-        </button>
-
-      </form>
-
+        <p style={{ textAlign: "center", fontSize: "13px", color: "var(--text-secondary)", marginTop: "20px" }}>
+          Already have an account?{" "}
+          <Link to="/login" style={{ color: "var(--accent)", fontWeight: "600", textDecoration: "none" }}>
+            Sign in
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }
-
-
 
 export default Register;
 </file>
@@ -1749,31 +2143,25 @@ import User from "../models/User.js";
 
 // CREATE GROUP
 export const createGroup = async (req, res) => {
-
   try {
-
     const { name } = req.body;
 
-       const groups = await Group.find({
-      members: req.user._id
-    })
-  
-    .populate(
-   "members",
-    "name email"
-  );
-
-    res.status(201).json(group);
-
-  } catch (error) {
-
-    res.status(500).json({
-      message: error.message
+    const group = await Group.create({
+      name,
+      admin: req.user._id,
+      members: [req.user._id]
     });
 
-  }
+    const populatedGroup = await Group.findById(group._id)
+      .populate("members", "name email");
 
+    res.status(201).json(populatedGroup);
+
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
+
 
 
 // GET USER GROUPS
@@ -2307,30 +2695,16 @@ const socketHandler = (io) => {
         // ==============================
 
            socket.on("typing", ({ groupId, userName }) => {
-
-    console.log("TYPING RECEIVED");
-    console.log(groupId);
-    console.log(userName);
-
-    socket.to(groupId).emit(
-        "user_typing",
-        userName
-    );
-
-});
+           socket.to(groupId).emit("user_typing", { groupId, userName });
+           });
 
         // ==============================
         // STOP TYPING
         // ==============================
 
-        socket.on("stop_typing", (groupId) => {
-
-            socket.to(groupId).emit(
-                "user_stop_typing"
-            );
-
-        });
-
+         socket.on("stop_typing", (groupId) => {
+         socket.to(groupId).emit("user_stop_typing", { groupId });
+          });
         // ==============================
         // DISCONNECT
         // ==============================

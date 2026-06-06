@@ -86,7 +86,7 @@ The app follows a WhatsApp-like UX pattern:
 ## UI Design Reference
 
 Figma Design Kit:
-🔗 [E-Chat UI Kit — Figma Community](https://www.figma.com/design/8uO4AykDHqGo4f02szjxhP/Chatting-App-UI-Kit-Design-%7C-E-Chat-%7C-Figma--Community-?node-id=21-122&t=PsK4W4X71zQiJNlV-1)
+🔗 [E-Chat UI Kit — Figma Community]:https://www.figma.com/design/0pcVrGgLYJL53GutbkuYlJ/Untitled?node-id=0-1&t=QzjY4j1tKRs4oLEY-1
 
 Key screens to implement (in order):
 1. Login / Register
