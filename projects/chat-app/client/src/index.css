@@ -1,5 +1,13 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
+/* =============================================
+   GLOBAL STYLES & CSS VARIABLES
+   This file controls the entire color theme,
+   typography, and base layout of the app.
+   Change variables here to retheme the whole UI.
+   ============================================= */
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* Reset — remove default browser spacing */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -7,89 +15,117 @@
 }
 
 :root {
-  /* Light Mode */
-  --bg-primary: #f5f5f7;
-  --bg-secondary: #ffffff;
-  --bg-tertiary: #f0f0f2;
-  --bg-glass: rgba(255, 255, 255, 0.72);
-  --bg-glass-heavy: rgba(255, 255, 255, 0.88);
-  --bg-input: rgba(0, 0, 0, 0.05);
-  --bg-hover: rgba(0, 0, 0, 0.04);
-  --bg-active: rgba(0, 122, 255, 0.08);
+  /* ── SIDEBAR COLORS (dark teal panel on the left) ── */
+  --sidebar-bg: #172626;           /* main sidebar background */
+  --sidebar-hover: rgba(255,255,255,0.08);  /* hover state on group rows */
+  --sidebar-active: rgba(255,255,255,0.14); /* selected group row */
+  --sidebar-border: rgba(255,255,255,0.08); /* dividers inside sidebar */
+  --sidebar-text-primary: #ffffff;          /* group name text */
+  --sidebar-text-secondary: rgba(255,255,255,0.55); /* preview text */
+  --sidebar-search-bg: rgba(0,0,0,0.2);    /* search bar background */
+  --sidebar-width: 320px;
 
-  --text-primary: #1d1d1f;
+  /* ── CHAT AREA COLORS (white/light main panel) ── */
+  --chat-bg: #e3e3e388;              /* chat messages background */
+  --chat-header-bg: #4c4f4f56;       /* top header bar */
+  --chat-input-bg: #e3e3e388;        /* bottom input bar */
+
+  /* ── MESSAGE BUBBLES ── */
+  --bubble-sent-bg: #1a1a1ae8;       /* my messages — dark pill */
+  --bubble-sent-text: #ffffff;
+  --bubble-received-bg: #777474;   /* their messages — light pill */
+  --bubble-received-text: #1a1a1a;
+
+  /* ── DATE SEPARATOR ── */
+  --date-sep-color: #aaaaaa;       /* "Nov 30, 2023" text color */
+
+  /* ── INPUT BAR ── */
+  --input-bg: #070606e0;             /* text input field background */
+  --input-border: #e0e0e0;
+  --input-text: #1a1a1a;
+  --input-placeholder: #aaaaaa;
+  --send-btn-bg: #000000;          /* send button color */
+  --send-btn-text: #23510f;
+
+  /* ── GENERAL ── */
+  --text-primary: #1a1a1a;
   --text-secondary: #6e6e73;
   --text-tertiary: #aeaeb2;
-  --text-on-accent: #ffffff;
-
   --accent: #007aff;
-  --accent-hover: #0066d6;
-  --accent-soft: rgba(0, 122, 255, 0.12);
-  --accent-bubble: #007aff;
-
-  --bubble-me: #007aff;
-  --bubble-me-text: #ffffff;
-  --bubble-other: #e9e9eb;
-  --bubble-other-text: #1d1d1f;
-
-  --border: rgba(0, 0, 0, 0.08);
-  --border-strong: rgba(0, 0, 0, 0.14);
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-  --shadow-md: 0 4px 16px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04);
-  --shadow-lg: 0 20px 60px rgba(0,0,0,0.12), 0 8px 24px rgba(0,0,0,0.06);
-  --shadow-card: 0 2px 20px rgba(0,0,0,0.08);
-
+  --border: rgba(0,0,0,0.08);
+  --bg-primary: #f5f5f5;
+  --bg-secondary: #ffffff;
+  --bg-input: rgba(0,0,0,0.05);
+  --bg-hover: rgba(0,0,0,0.04);
+  --bg-active: rgba(0,122,255,0.08);
+  --bg-glass: rgba(255,255,255,0.72);
+  --bg-glass-heavy: rgba(255,255,255,0.95);
+  --navbar-height: 52px;
   --radius-xs: 6px;
   --radius-sm: 10px;
   --radius-md: 14px;
   --radius-lg: 20px;
   --radius-xl: 28px;
   --radius-full: 9999px;
-
-  --sidebar-width: 300px;
-  --navbar-height: 52px;
-
   --blur: blur(20px) saturate(180%);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+  --shadow-lg: 0 20px 60px rgba(0,0,0,0.12);
+  --shadow-card: 0 2px 20px rgba(0,0,0,0.08);
+  --border-strong: rgba(0,0,0,0.14);
+  --accent-soft: rgba(0,122,255,0.12);
+  --accent-hover: #0066d6;
+  --bubble-me: #1a1a1a;
+  --bubble-me-text: #ffffff;
+  --bubble-other: #ececec;
+  --bubble-other-text: #1a1a1a;
 }
 
+/* ── DARK MODE OVERRIDES ──
+   Kept minimal — sidebar is already dark,
+   only chat area needs dark mode flip */
 [data-theme="dark"] {
-  --bg-primary: #000000;
-  --bg-secondary: #1c1c1e;
-  --bg-tertiary: #2c2c2e;
-  --bg-glass: rgba(28, 28, 30, 0.82);
-  --bg-glass-heavy: rgba(28, 28, 30, 0.95);
-  --bg-input: rgba(255, 255, 255, 0.07);
-  --bg-hover: rgba(255, 255, 255, 0.06);
-  --bg-active: rgba(0, 122, 255, 0.15);
-
+  --chat-bg: #1a1a1a;
+  --chat-header-bg: #242424;
+  --chat-input-bg:  #1a1a1a;
+  --bubble-sent-bg: #1a86f2b3;
+  --bubble-received-bg: #2c2c2e;
+  --bubble-received-text: #f5f5f7;
+  --input-bg: #2c2c2e;
+  --input-border: #4f4f5a;
+  --input-text: #f5f5f7;
+  --input-placeholder: #636366;
+  --send-btn-bg: #0a84ff;
   --text-primary: #f5f5f7;
   --text-secondary: #98989d;
   --text-tertiary: #636366;
-  --text-on-accent: #ffffff;
-
-  --accent: #0a84ff;
-  --accent-hover: #409cff;
-  --accent-soft: rgba(10, 132, 255, 0.15);
-
-  --bubble-me: #0a84ff;
-  --bubble-me-text: #ffffff;
-  --bubble-other: #2c2c2e;
-  --bubble-other-text: #f5f5f7;
-
-  --border: rgba(255, 255, 255, 0.08);
-  --border-strong: rgba(255, 255, 255, 0.14);
+  --bg-primary: #000000;
+  --bg-secondary: #1c1c1e;
+  --bg-input: rgba(255,255,255,0.07);
+  --bg-hover: rgba(255,255,255,0.06);
+  --bg-active: rgba(0,122,255,0.15);
+  --bg-glass: rgba(28,28,30,0.82);
+  --bg-glass-heavy: rgba(28,28,30,0.95);
+  --border: rgba(255,255,255,0.08);
+  --border-strong: rgba(255,255,255,0.14);
   --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
   --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
   --shadow-lg: 0 20px 60px rgba(0,0,0,0.6);
   --shadow-card: 0 2px 20px rgba(0,0,0,0.5);
+  --accent: #0a84ff;
+  --accent-hover: #409cff;
+  --accent-soft: rgba(10,132,255,0.15);
+  --date-sep-color: #636366;
+  --bubble-me: #0a84ff;
 }
 
+/* ── BASE HTML/BODY ── */
 html, body {
   height: 100%;
 }
 
 body {
-  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   background: var(--bg-primary);
   color: var(--text-primary);
   height: 100vh;
@@ -99,6 +135,7 @@ body {
   transition: background 0.3s ease, color 0.3s ease;
 }
 
+/* Root flex column — navbar sits on top, content fills the rest */
 #root {
   height: 100vh;
   display: flex;
@@ -106,13 +143,14 @@ body {
 }
 
 input, button, textarea {
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
 }
 
-/* Scrollbar */
+/* Hide scrollbars visually but keep scroll functionality */
 ::-webkit-scrollbar { width: 0px; }
 
-/* Animations */
+/* ── KEYFRAME ANIMATIONS ──
+   Used for entrance effects on group list items and modals */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(10px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -128,12 +166,8 @@ input, button, textarea {
   to   { opacity: 1; transform: scale(1); }
 }
 
+/* Typing indicator bounce — three dots that bounce in sequence */
 @keyframes typingBounce {
   0%, 60%, 100% { transform: translateY(0); }
   30% { transform: translateY(-5px); }
-}
-
-@keyframes shimmer {
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
 }

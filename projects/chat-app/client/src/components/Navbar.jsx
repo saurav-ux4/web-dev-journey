@@ -1,147 +1,94 @@
-import { useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
+
+/* =============================================
+   NAVBAR COMPONENT
+   Top bar of the app — shows app name on the left
+   and a dark/light mode toggle switch on the right.
+   
+   Props:
+   - darkMode: boolean — current theme state
+   - setDarkMode: function — toggles the theme
+   ============================================= */
 
 function Navbar({ darkMode, setDarkMode }) {
-  const { user, logout } = useContext(AuthContext);
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    logout();
-    navigate("/login");
-  };
-
-  if (!user) return null;
-
   return (
     <nav style={{
+      /* ── Fixed top bar spanning full width ── */
       height: "var(--navbar-height)",
-      background: "var(--bg-glass)",
-      backdropFilter: "var(--blur)",
-      WebkitBackdropFilter: "var(--blur)",
-      borderBottom: "1px solid var(--border)",
+      background: darkMode ? "#111111" : "#1a1a1a",
       display: "flex",
       alignItems: "center",
       justifyContent: "space-between",
       padding: "0 20px",
       flexShrink: 0,
-      position: "relative",
       zIndex: 100,
+      borderBottom: "1px solid rgba(255,255,255,0.06)",
     }}>
 
-      {/* Logo */}
-      <Link to="/" style={{
+      {/* ── App name on the left ── */}
+      <span style={{
+        fontWeight: "700",
+        fontSize: "16px",
+        color: "#ffffff",
+        letterSpacing: "-0.3px",
+      }}>
+        Chat App <h5>made with ❤️ by saurav</h5>
+      </span>
+
+      {/* ── Theme toggle on the right ── */}
+      <div style={{
         display: "flex",
         alignItems: "center",
         gap: "8px",
-        textDecoration: "none",
-        color: "var(--text-primary)"
       }}>
-        <div style={{
-          width: "28px",
-          height: "28px",
-          borderRadius: "8px",
-          background: "var(--accent)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontSize: "14px"
-        }}>
-          💬
-        </div>
+
+        {/* Sun icon — shown when in dark mode (click to go light) */}
         <span style={{
-          fontWeight: "700",
-          fontSize: "16px",
-          letterSpacing: "-0.4px",
-          color: "var(--text-primary)"
+          fontSize: "13px",
+          opacity: darkMode ? 0.5 : 1,
+          transition: "opacity 0.2s",
         }}>
-          GroupChat
+          
         </span>
-      </Link>
 
-      {/* Right side */}
-      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-
-        {/* Dark mode toggle */}
-        <button
+        {/* ── iOS-style toggle switch ──
+            Clicking anywhere on the track toggles the theme.
+            The knob slides left (light) or right (dark). */}
+        <div
           onClick={() => setDarkMode(!darkMode)}
-          title={darkMode ? "Light mode" : "Dark mode"}
           style={{
-            width: "36px",
-            height: "36px",
-            borderRadius: "50%",
-            border: "1px solid var(--border)",
-            background: "var(--bg-input)",
-            color: "var(--text-secondary)",
-            fontSize: "16px",
+            position: "relative",
+            width: "44px",
+            height: "26px",
+            borderRadius: "13px",
+            /* Track color: blue when dark mode ON, grey when light mode */
+            background: darkMode ? "#0a84ff" : "rgba(255,255,255,0.25)",
             cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            transition: "all 0.2s ease"
+            transition: "background 0.25s ease",
+            flexShrink: 0,
           }}
         >
-          {darkMode ? "☀️" : "🌙"}
-        </button>
-
-        {/* User pill */}
-        <div style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "8px",
-          padding: "5px 14px 5px 6px",
-          borderRadius: "var(--radius-full)",
-          background: "var(--bg-input)",
-          border: "1px solid var(--border)"
-        }}>
+          {/* ── Knob ── slides right when darkMode is true */}
           <div style={{
-            width: "26px",
-            height: "26px",
+            position: "absolute",
+            top: "3px",
+            left: darkMode ? "21px" : "3px",   /* slides between 3px and 21px */
+            width: "20px",
+            height: "20px",
             borderRadius: "50%",
-            background: "var(--accent)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: "11px",
-            fontWeight: "700",
-            color: "#fff"
-          }}>
-            {user.name.charAt(0).toUpperCase()}
-          </div>
-          <span style={{
-            fontSize: "13px",
-            fontWeight: "500",
-            color: "var(--text-primary)"
-          }}>
-            {user.name}
-          </span>
+            background: "#ffffff",
+            boxShadow: "0 1px 4px rgba(0,0,0,0.3)",
+            transition: "left 0.22s cubic-bezier(0.34, 1.4, 0.64, 1)",  /* springy slide */
+          }} />
         </div>
 
-        {/* Logout */}
-        <button
-          onClick={handleLogout}
-          style={{
-            padding: "7px 14px",
-            borderRadius: "var(--radius-full)",
-            border: "1px solid var(--border)",
-            background: "transparent",
-            color: "var(--text-secondary)",
-            fontSize: "13px",
-            fontWeight: "500",
-            cursor: "pointer",
-            transition: "all 0.2s ease"
-          }}
-          onMouseEnter={e => {
-            e.currentTarget.style.background = "var(--bg-hover)";
-            e.currentTarget.style.color = "var(--text-primary)";
-          }}
-          onMouseLeave={e => {
-            e.currentTarget.style.background = "transparent";
-            e.currentTarget.style.color = "var(--text-secondary)";
-          }}
-        >
-          Sign out
-        </button>
+        {/* Moon icon — shown when in light mode (click to go dark) */}
+        <span style={{
+          fontSize: "13px",
+          opacity: darkMode ? 1 : 0.5,
+          transition: "opacity 0.2s",
+        }}>
+          
+        </span>
       </div>
     </nav>
   );
